@@ -1,4 +1,4 @@
-name: shownote build test
+name: build
 
 on:
   push:
