@@ -1,28 +1,43 @@
 basePath: /
-host: localhost:8000
 info:
   contact: {}
   description: This is a sample server Petstore server.
   title: ShowNote API
   version: 0.0.1
 paths:
-  /auth/:
+  /auth/:repo:
     get:
-      consumes:
-      - application/json
       description: gitee auth login
       parameters:
+      - description: 仓库类型 gitee or github
+        in: query
+        name: repo
+        required: true
+        type: string
       - description: '{redirect_uri}?code=abc'
         in: query
         name: code
         required: true
         type: string
-      produces:
-      - application/json
       responses:
         "200":
           description: '{"success":true,"data":{},"msg":"创建成功"}'
           schema:
             type: string
-      summary: gitee授权登录
+      summary: 授权登录
+  /user:
+    get:
+      description: 获取用户的基本信息
+      parameters:
+      - description: accesstoken
+        in: query
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"创建成功"}'
+          schema:
+            type: string
+      summary: 获取用户信息
 swagger: "2.0"

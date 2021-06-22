@@ -15,7 +15,7 @@
         function auth() {
             // 1. 应用通过 浏览器 或 Webview 将用户引导到码云三方认证页面上（ GET请求 ）
             let clientId = 'f5763537e579c4f97c56c69b80489a17e250d8186e48efbe3e3fba4c4b6c9558'
-            let redirectUri = 'http://127.0.0.1:8000/auth'
+            let redirectUri = 'http://127.0.0.1:8000/auth/gitee'
             let authUrl = 'https://gitee.com/oauth/authorize?client_id=' + clientId + '&redirect_uri=' + redirectUri + '&response_type=code'
             window.location = authUrl
         }

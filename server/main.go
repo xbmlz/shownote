@@ -1,6 +1,7 @@
 package main
 
 import (
+	"shownote/config"
 	_ "shownote/docs"
 	"shownote/router"
 
@@ -16,9 +17,9 @@ import (
 // @title ShowNote API
 // @version 0.0.1
 // @description This is a sample server Petstore server.
-// @host localhost:8000
 // @BasePath /
 func main() {
+	config.InitAppConfig()
 	router := router.InitRouter()
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.LoadHTMLGlob("templates/*")

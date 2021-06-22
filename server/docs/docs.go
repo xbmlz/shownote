@@ -24,21 +24,45 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/auth/": {
+        "/auth/:repo": {
             "get": {
                 "description": "gitee auth login",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "gitee授权登录",
+                "summary": "授权登录",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "仓库类型 gitee or github",
+                        "name": "repo",
+                        "in": "query",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "{redirect_uri}?code=abc",
                         "name": "code",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"创建成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user": {
+            "get": {
+                "description": "获取用户的基本信息",
+                "summary": "获取用户信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "accesstoken",
+                        "name": "token",
                         "in": "query",
                         "required": true
                     }
@@ -68,7 +92,7 @@ type swaggerInfo struct {
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = swaggerInfo{
 	Version:     "0.0.1",
-	Host:        "localhost:8000",
+	Host:        "",
 	BasePath:    "/",
 	Schemes:     []string{},
 	Title:       "ShowNote API",
