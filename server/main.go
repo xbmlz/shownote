@@ -22,5 +22,6 @@ func main() {
 	router := router.InitRouter()
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.LoadHTMLGlob("templates/*")
+	router.Static("static", "./static")
 	router.Run(":8000") // listen and serve on 0.0.0.0:8000
 }

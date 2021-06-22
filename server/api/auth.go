@@ -1,7 +1,8 @@
 package api
 
 import (
-	"shownote/model/response"
+	"fmt"
+	"net/http"
 	"shownote/utils"
 
 	"github.com/gin-gonic/gin"
@@ -20,8 +21,8 @@ func AuthAction(c *gin.Context) {
 	// func GetToken(code, clientId, redirectUri, clientSecret string) string
 	token, err := utils.GetToken(code, "f5763537e579c4f97c56c69b80489a17e250d8186e48efbe3e3fba4c4b6c9558", "http://127.0.0.1:8000/auth", "43896c34a76ebf45b408cd05436dd5e8cabea1e2c20c6e7ba9dfb6fde908c5ba")
 	if err != nil {
-		response.Fail(c)
+		c.Redirect(http.StatusMovedPermanently, "http://www.baidu.com")
 	} else {
-		response.OkWithData(token, c)
+		c.Redirect(http.StatusMovedPermanently, fmt.Sprintf("http://127.0.0.1:8000/static/index.html?token=%s", token.AccessToken))
 	}
 }

@@ -8,7 +8,7 @@ import (
 
 func InitRouter() *gin.Engine {
 	router := gin.Default()
-	router.GET("/", api.IndexAction)
+	router.GET("/", api.LoginAction)
 	router.GET("/auth", api.AuthAction)
 	return router
 }
