@@ -1,14 +1,29 @@
 <template>
-  <router-view />
+  <ConfigProvider :locale="getAntdLocale">
+    <AppProvider>
+      <RouterView />
+    </AppProvider>
+  </ConfigProvider>
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+<script lang="ts">
+  import { defineComponent } from 'vue';
+  import { ConfigProvider } from 'ant-design-vue';
+  import { AppProvider } from '/@/components/Application';
+
+  import { useTitle } from '/@/hooks/web/useTitle';
+  import { useLocale } from '/@/locales/useLocale';
+
+  export default defineComponent({
+    name: 'App',
+    components: { ConfigProvider, AppProvider },
+    setup() {
+      useTitle();
+
+      // support Multi-language
+      const { getAntdLocale } = useLocale();
+
+      return { getAntdLocale };
+    },
+  });
+</script>
