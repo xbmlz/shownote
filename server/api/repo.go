@@ -1,57 +1,36 @@
 package api
 
 import (
-	"encoding/json"
-	"fmt"
-	"net/http"
-	"shownote/config"
-	"shownote/model"
 	"shownote/model/response"
-	"shownote/utils"
+	"shownote/service"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-resty/resty/v2"
 )
 
-// @Summary 授权登录
-// @Description gitee auth login
-// @Param	repo	query	string	true	"仓库类型 gitee or github"
-// @Param	code	query	string	true	"{redirect_uri}?code=abc"
-// @Success 200 {string} string "{"success":true,"data":{},"msg":"创建成功"}"
-// @Router /auth/:repo [get]
-func AuthAction(c *gin.Context) {
-	code := c.Query("code")
-	repo := c.Param("repo")
-	// state := c.Query("state")
-	// func GetToken(code, clientId, redirectUri, clientSecret string) string
-	token, err := utils.GetToken(code, repo)
-	if err != nil {
-		c.Redirect(http.StatusMovedPermanently, config.AppConfig.WebConfig.ErrorUrl)
-	} else {
-		c.Redirect(http.StatusMovedPermanently, config.AppConfig.WebConfig.IndexUrl+"?token="+token.AccessToken)
-	}
-}
-
-// @Summary 获取用户信息
-// @Description 获取用户的基本信息
+// @Summary 初始化
+// @Description初始化仓库信息
 // @Param	token	query	string	true	"accesstoken"
-// @Success 200 {string} string "{"success":true,"data":{},"msg":"创建成功"}"
-// @Router /user [get]
-func UserAction(c *gin.Context) {
+// @Param	login	query	string	true	"用户名"
+// @Success 200 {string string "{"success":true,"data":{},"msg":"账号初始化成功"}"
+// @Router /init [get]
+func InitAction(c *gin.Context) {
 	token := c.Query("token")
+	login := c.Query("login")
 	if token == "" {
 		response.FailWithMessage("接口未授权", c)
 	}
-	client := resty.New()
-	resp, err := client.R().
-		SetQueryParam("access_token", token).
-		Get("https://gitee.com/api/v5/user")
-
-	if err != nil {
-		response.FailWithMessage("获取用户信息失败", c)
+	// 1. 创建一个shownote的仓库
+	if err := service.CreateRepo(token, "shownote"); err != nil {
+		response.FailWithMessage("仓库初始化失败", c)
 	}
-	var userInfo model.User
-	json.Unmarshal(resp.Body(), &userInfo)
-	fmt.Println(userInfo)
-	response.OkWithData(userInfo, c)
+	// 2. 创建一个.shownote文件夹
+	// 3. 在.shownote下创建一个workspace.json的配置文件
+	const filePath = ".shownote/workspace.json"
+	const workspaceJson = `{
+		"note": []
+	}`
+	if err := service.CreateFile(token, login, filePath, workspaceJson); err != nil {
+		response.FailWithMessage("仓库配置文件失败", c)
+	}
+	response.OkWithMessage("账号初始化成功", c)
 }
