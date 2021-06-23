@@ -1,4 +1,4 @@
-package utils
+package service
 
 import (
 	"encoding/json"
@@ -8,6 +8,22 @@ import (
 
 	"github.com/go-resty/resty/v2"
 )
+
+func RefreshToken(refreshToken string) (global.Token, error) {
+	// https://gitee.com/oauth/token?grant_type=refresh_token&refresh_token={refresh_token}
+	var token global.Token
+	client := resty.New()
+	resp, err := client.R().
+		SetHeader("Content-Type", "application/json").
+		SetBody(fmt.Sprintf(`{"grant_type":"refresh_token", "refresh_token":"%s"}`, refreshToken)).
+		Post(config.AppConfig.GiteeConfig.TokenUrl)
+	if err != nil {
+		return token, err
+	}
+	fmt.Println(resp.String())
+	json.Unmarshal(resp.Body(), &token)
+	return token, nil
+}
 
 func GetToken(code, repo string) (global.Token, error) {
 	// https://gitee.com/oauth/token?grant_type=authorization_code&code={code}&client_id={client_id}&redirect_uri={redirect_uri}&client_secret={client_secret}

@@ -5,7 +5,56 @@ info:
   title: ShowNote API
   version: 0.0.1
 paths:
-  /auth/:repo:
+  /repo/content:
+    get:
+      description: 获取文件信息
+      parameters:
+      - description: accesstoken
+        in: query
+        name: token
+        required: true
+        type: string
+      - description: 用户名
+        in: query
+        name: login
+        required: true
+        type: string
+      - description: 文件路径
+        in: query
+        name: path
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"账号初始化成功"}'
+          schema:
+            type: string
+      summary: 获取文件信息
+      tags:
+      - 仓库
+  /repo/info:
+    get:
+      description: 获取仓库信息，没有则初始化仓库
+      parameters:
+      - description: accesstoken
+        in: query
+        name: token
+        required: true
+        type: string
+      - description: 用户名
+        in: query
+        name: login
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"账号初始化成功"}'
+          schema:
+            type: string
+      summary: 获取仓库信息
+      tags:
+      - 仓库
+  /user/auth/:repo:
     get:
       description: gitee auth login
       parameters:
@@ -25,7 +74,9 @@ paths:
           schema:
             type: string
       summary: 授权登录
-  /user:
+      tags:
+      - 用户
+  /user/info:
     get:
       description: 获取用户的基本信息
       parameters:
@@ -40,4 +91,6 @@ paths:
           schema:
             type: string
       summary: 获取用户信息
+      tags:
+      - 仓库
 swagger: "2.0"
