@@ -9,3 +9,9 @@ type Token struct {
 	Scope        string `json:"scope"`
 	CreatedAt    int32  `json:"created_at"`
 }
+
+const (
+	REPO_NAME      = "sn-repo"
+	SHARE_NAME     = "sn-share"
+	WORKSPACE_PATH = ".shownote/workspace.json"
+)

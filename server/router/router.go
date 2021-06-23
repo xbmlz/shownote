@@ -10,15 +10,16 @@ func InitRouter() *gin.Engine {
 	router := gin.Default()
 	router.GET("/", api.LoginAction)
 
-	userRouter := router.Group("user")
+	user := router.Group("user")
 	{
-		userRouter.GET("/auth/:repo", api.AuthAction)
-		userRouter.GET("/info", api.UserAction)
+		user.GET("/auth/:repo", api.UserAuthAction)
+		user.GET("/info", api.UserInfoAction)
 	}
 
-	repoRouter := router.Group("repo")
+	repo := router.Group("repo")
 	{
-		repoRouter.GET("/init")
+		repo.GET("/info", api.RepoInfoAction)
+		repo.GET("/content", api.RepoContentAction)
 	}
 	return router
 }

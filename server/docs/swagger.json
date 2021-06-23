@@ -8,9 +8,85 @@
     },
     "basePath": "/",
     "paths": {
-        "/auth/:repo": {
+        "/repo/content": {
+            "get": {
+                "description": "获取文件信息",
+                "tags": [
+                    "仓库"
+                ],
+                "summary": "获取文件信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "accesstoken",
+                        "name": "token",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "用户名",
+                        "name": "login",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "文件路径",
+                        "name": "path",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"账号初始化成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/repo/info": {
+            "get": {
+                "description": "获取仓库信息，没有则初始化仓库",
+                "tags": [
+                    "仓库"
+                ],
+                "summary": "获取仓库信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "accesstoken",
+                        "name": "token",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "用户名",
+                        "name": "login",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"账号初始化成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/auth/:repo": {
             "get": {
                 "description": "gitee auth login",
+                "tags": [
+                    "用户"
+                ],
                 "summary": "授权登录",
                 "parameters": [
                     {
@@ -38,9 +114,12 @@
                 }
             }
         },
-        "/user": {
+        "/user/info": {
             "get": {
                 "description": "获取用户的基本信息",
+                "tags": [
+                    "仓库"
+                ],
                 "summary": "获取用户信息",
                 "parameters": [
                     {
