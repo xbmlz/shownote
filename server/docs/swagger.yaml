@@ -1,4 +1,18 @@
 basePath: /
+definitions:
+  request.FileInfo:
+    properties:
+      content:
+        type: string
+      login:
+        type: string
+      path:
+        type: string
+      sha:
+        type: string
+      token:
+        type: string
+    type: object
 info:
   contact: {}
   description: This is a sample server Petstore server.
@@ -7,9 +21,9 @@ info:
 paths:
   /repo/content:
     get:
-      description: 获取文件信息
+      description: 获取仓库具体路径下的内容
       parameters:
-      - description: accesstoken
+      - description: access_token
         in: query
         name: token
         required: true
@@ -29,14 +43,53 @@ paths:
           description: '{"success":true,"data":{},"msg":"账号初始化成功"}'
           schema:
             type: string
-      summary: 获取文件信息
+      summary: 获取仓库具体路径下的内容
+      tags:
+      - 仓库
+  /repo/file:
+    post:
+      description: 新建文件
+      parameters:
+      - description: FileInfo
+        in: body
+        name: token
+        required: true
+        schema:
+          $ref: '#/definitions/request.FileInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"账号初始化成功"}'
+          schema:
+            type: string
+      summary: 新建文件
+      tags:
+      - 仓库
+    put:
+      description: 更新文件
+      parameters:
+      - description: FileInfo
+        in: body
+        name: token
+        required: true
+        schema:
+          $ref: '#/definitions/request.FileInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"账号初始化成功"}'
+          schema:
+            type: string
+      summary: 更新文件
       tags:
       - 仓库
   /repo/info:
     get:
       description: 获取仓库信息，没有则初始化仓库
       parameters:
-      - description: accesstoken
+      - description: access_token
         in: query
         name: token
         required: true
@@ -92,5 +145,5 @@ paths:
             type: string
       summary: 获取用户信息
       tags:
-      - 仓库
+      - 用户
 swagger: "2.0"

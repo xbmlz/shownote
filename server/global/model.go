@@ -14,4 +14,5 @@ const (
 	REPO_NAME      = "sn-repo"
 	SHARE_NAME     = "sn-share"
 	WORKSPACE_PATH = ".shownote/workspace.json"
+	COMMIT_MSG     = "shownote commit"
 )

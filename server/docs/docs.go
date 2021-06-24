@@ -26,15 +26,15 @@ var doc = `{
     "paths": {
         "/repo/content": {
             "get": {
-                "description": "获取文件信息",
+                "description": "获取仓库具体路径下的内容",
                 "tags": [
                     "仓库"
                 ],
-                "summary": "获取文件信息",
+                "summary": "获取仓库具体路径下的内容",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "accesstoken",
+                        "description": "access_token",
                         "name": "token",
                         "in": "query",
                         "required": true
@@ -64,6 +64,66 @@ var doc = `{
                 }
             }
         },
+        "/repo/file": {
+            "put": {
+                "description": "更新文件",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "仓库"
+                ],
+                "summary": "更新文件",
+                "parameters": [
+                    {
+                        "description": "FileInfo",
+                        "name": "token",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.FileInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"账号初始化成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "新建文件",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "仓库"
+                ],
+                "summary": "新建文件",
+                "parameters": [
+                    {
+                        "description": "FileInfo",
+                        "name": "token",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.FileInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"账号初始化成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/repo/info": {
             "get": {
                 "description": "获取仓库信息，没有则初始化仓库",
@@ -74,7 +134,7 @@ var doc = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "accesstoken",
+                        "description": "access_token",
                         "name": "token",
                         "in": "query",
                         "required": true
@@ -134,7 +194,7 @@ var doc = `{
             "get": {
                 "description": "获取用户的基本信息",
                 "tags": [
-                    "仓库"
+                    "用户"
                 ],
                 "summary": "获取用户信息",
                 "parameters": [
@@ -153,6 +213,28 @@ var doc = `{
                             "type": "string"
                         }
                     }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "request.FileInfo": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "login": {
+                    "type": "string"
+                },
+                "path": {
+                    "type": "string"
+                },
+                "sha": {
+                    "type": "string"
+                },
+                "token": {
+                    "type": "string"
                 }
             }
         }

@@ -19,7 +19,52 @@ workspace.json
 
 ```json
 {
-	"note": [],
+	"note": [
+          {
+            "name": "web开发",
+            "path": "/web开发",
+            "isDir": true,
+            "isShare": false,
+            "sha": "",
+            "size": 0,
+            "url": "",
+            "type": "",
+            "html_url": "",
+            "download_url": "",
+            "createTime": "2021-06-19 13:27",
+            "updateTime": "2021-06-19 13:27",
+            "child": [
+                {
+                    "name": "web开发",
+                    "path": "/web开发/1.md",
+                    "isDir": true,
+                    "isShare": false,
+                    "sha": "",
+                    "size": 0,
+                    "url": "",
+                    "type": "",
+                    "html_url": "",
+                    "download_url": "",
+                    "createTime": "2021-06-19 13:27",
+                    "updateTime": "2021-06-19 13:27",
+                },
+                {
+                    "name": "web开发",
+                    "path": "/web开发/1.md",
+                    "isDir": true,
+                    "isShare": false,
+                    "sha": "",
+                    "size": 0,
+                    "url": "",
+                    "type": "",
+                    "html_url": "",
+                    "download_url": "",
+                    "createTime": "2021-06-19 13:27",
+                    "updateTime": "2021-06-19 13:27",
+                }
+            ]
+        }
+     ],
 	"trash": [],
 	"share": []
 }
