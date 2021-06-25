@@ -24,3 +24,43 @@ createApp(App)
 ```bash
 npm install vditor --save --registry https://registry.npm.taobao.org
 ```
+
+template
+
+```html
+<div id="vditor"></div>
+```
+
+ts
+
+```javascript
+import { ref, defineComponent, onMounted } from "vue";
+import Vditor from "vditor";
+
+export default defineComponent({
+  name: "App",
+  setup() {
+    let vditor = ref(null);
+    onMounted(() => {
+      vditor = new Vditor("vditor", {
+        height: 360,
+        toolbarConfig: {
+          pin: true,
+        },
+        cache: {
+          enable: false,
+        },
+        after: () => {
+          if (vditor) vditor.setValue("hello, Vditor + Vue!");
+        },
+      });
+    });
+    const getValue = () => {
+      alert(vditor.getValue())
+    };
+    return {
+      getValue,
+    };
+  },
+});
+```

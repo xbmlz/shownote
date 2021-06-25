@@ -14,7 +14,7 @@
     <multipane-resizer></multipane-resizer>
     <div class="pane" :style="{ flexGrow: 1 }">
       <div>
-        <a-button @click="getValue">获取</a-button>
+        <a-button>获取</a-button>
         <div id="vditor"></div>
       </div>
     </div>
@@ -30,27 +30,17 @@ export default defineComponent({
   name: "App",
   components: { Multipane, MultipaneResizer },
   setup() {
-    let vditor = ref(null);
     onMounted(() => {
-      vditor = new Vditor("vditor", {
+      new Vditor("vditor", {
         height: 360,
         toolbarConfig: {
           pin: true,
         },
         cache: {
           enable: false,
-        },
-        after: () => {
-          if (vditor) vditor.setValue("hello, Vditor + Vue!");
-        },
+        }
       });
     });
-    const getValue = () => {
-      alert(vditor.getValue())
-    };
-    return {
-      getValue,
-    };
   },
 });
 </script>
