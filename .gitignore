@@ -21,6 +21,7 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+*.exe
 
 # vscode
 __debug_bin
