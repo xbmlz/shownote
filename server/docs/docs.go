@@ -56,9 +56,9 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"success\":true,\"data\":{},\"msg\":\"账号初始化成功\"}",
+                        "description": "成功后返回值",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/response.FileInfo"
                         }
                     }
                 }
@@ -87,9 +87,9 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"success\":true,\"data\":{},\"msg\":\"账号初始化成功\"}",
+                        "description": "成功后返回值",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/response.FileInfo"
                         }
                     }
                 }
@@ -116,9 +116,9 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"success\":true,\"data\":{},\"msg\":\"账号初始化成功\"}",
+                        "description": "成功后返回值",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/response.FileInfo"
                         }
                     }
                 }
@@ -126,7 +126,7 @@ var doc = `{
         },
         "/repo/info": {
             "get": {
-                "description": "获取仓库信息，没有则初始化仓库",
+                "description": "获取仓库信息，没有则初始化仓库，并返回.shownote/workspace.json的内容",
                 "tags": [
                     "仓库"
                 ],
@@ -149,9 +149,9 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"success\":true,\"data\":{},\"msg\":\"账号初始化成功\"}",
+                        "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/response.FileInfo"
                         }
                     }
                 }
@@ -234,6 +234,38 @@ var doc = `{
                     "type": "string"
                 },
                 "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.FileInfo": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "download_url": {
+                    "type": "string"
+                },
+                "html_url": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "path": {
+                    "type": "string"
+                },
+                "sha": {
+                    "type": "string"
+                },
+                "size": {
+                    "type": "integer"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "url": {
                     "type": "string"
                 }
             }

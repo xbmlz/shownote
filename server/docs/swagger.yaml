@@ -13,6 +13,27 @@ definitions:
       token:
         type: string
     type: object
+  response.FileInfo:
+    properties:
+      content:
+        type: string
+      download_url:
+        type: string
+      html_url:
+        type: string
+      name:
+        type: string
+      path:
+        type: string
+      sha:
+        type: string
+      size:
+        type: integer
+      type:
+        type: string
+      url:
+        type: string
+    type: object
 info:
   contact: {}
   description: This is a sample server Petstore server.
@@ -40,9 +61,9 @@ paths:
         type: string
       responses:
         "200":
-          description: '{"success":true,"data":{},"msg":"账号初始化成功"}'
+          description: 成功后返回值
           schema:
-            type: string
+            $ref: '#/definitions/response.FileInfo'
       summary: 获取仓库具体路径下的内容
       tags:
       - 仓库
@@ -60,9 +81,9 @@ paths:
       - application/json
       responses:
         "200":
-          description: '{"success":true,"data":{},"msg":"账号初始化成功"}'
+          description: 成功后返回值
           schema:
-            type: string
+            $ref: '#/definitions/response.FileInfo'
       summary: 新建文件
       tags:
       - 仓库
@@ -79,15 +100,15 @@ paths:
       - application/json
       responses:
         "200":
-          description: '{"success":true,"data":{},"msg":"账号初始化成功"}'
+          description: 成功后返回值
           schema:
-            type: string
+            $ref: '#/definitions/response.FileInfo'
       summary: 更新文件
       tags:
       - 仓库
   /repo/info:
     get:
-      description: 获取仓库信息，没有则初始化仓库
+      description: 获取仓库信息，没有则初始化仓库，并返回.shownote/workspace.json的内容
       parameters:
       - description: access_token
         in: query
@@ -101,9 +122,9 @@ paths:
         type: string
       responses:
         "200":
-          description: '{"success":true,"data":{},"msg":"账号初始化成功"}'
+          description: OK
           schema:
-            type: string
+            $ref: '#/definitions/response.FileInfo'
       summary: 获取仓库信息
       tags:
       - 仓库

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -46,6 +47,7 @@ func CreateFile(token, login, path, content string) (response.FileInfo, error) {
 	var (
 		info response.FileInfo
 	)
+	content = base64.StdEncoding.EncodeToString([]byte(content))
 	client := resty.New()
 	resp, err := client.R().
 		SetHeader("Content-Type", "application/json").
@@ -55,15 +57,24 @@ func CreateFile(token, login, path, content string) (response.FileInfo, error) {
 	if err != nil {
 		return info, err
 	}
-	if resp.RawResponse.StatusCode <= 201 {
+	if resp.RawResponse.StatusCode > 201 {
 		return info, errors.New("创建文件失败")
 	}
+	fmt.Println(resp.String())
 	jsonObj, err := simplejson.NewJson([]byte(resp.Body()))
+	if err != nil {
+		return info, err
+	}
+	decStr, err := base64.StdEncoding.DecodeString(jsonObj.Get("content").MustString())
+	if err != nil {
+		return info, err
+	}
+	info.Content = string(decStr)
 	info.Name = jsonObj.Get("content").Get("name").MustString()
 	info.Path = jsonObj.Get("content").Get("path").MustString()
 	info.Content = jsonObj.Get("content").Get("content").MustString()
 	info.Sha = jsonObj.Get("content").Get("sha").MustString()
-	info.Size = jsonObj.Get("content").Get("size").MustString()
+	info.Size = jsonObj.Get("content").Get("size").MustInt()
 	info.Url = jsonObj.Get("content").Get("url").MustString()
 	info.FileType = jsonObj.Get("content").Get("type").MustString()
 	info.HtmlUrl = jsonObj.Get("content").Get("html_url").MustString()
@@ -76,6 +87,7 @@ func UpdateFile(token, login, path, content, sha string) (response.FileInfo, err
 	var (
 		info response.FileInfo
 	)
+	content = base64.StdEncoding.EncodeToString([]byte(content))
 	client := resty.New()
 	resp, err := client.R().
 		SetHeader("Content-Type", "application/json").
@@ -85,15 +97,24 @@ func UpdateFile(token, login, path, content, sha string) (response.FileInfo, err
 	if err != nil {
 		return info, err
 	}
-	if resp.RawResponse.StatusCode <= 201 {
+	if resp.RawResponse.StatusCode > 201 {
 		return info, errors.New("更新文件失败")
 	}
+	fmt.Println(resp.String())
 	jsonObj, err := simplejson.NewJson([]byte(resp.Body()))
+	if err != nil {
+		return info, err
+	}
+	decStr, err := base64.StdEncoding.DecodeString(jsonObj.Get("content").MustString())
+	if err != nil {
+		return info, err
+	}
+	info.Content = string(decStr)
 	info.Name = jsonObj.Get("content").Get("name").MustString()
 	info.Path = jsonObj.Get("content").Get("path").MustString()
 	info.Content = jsonObj.Get("content").Get("content").MustString()
 	info.Sha = jsonObj.Get("content").Get("sha").MustString()
-	info.Size = jsonObj.Get("content").Get("size").MustString()
+	info.Size = jsonObj.Get("content").Get("size").MustInt()
 	info.Url = jsonObj.Get("content").Get("url").MustString()
 	info.FileType = jsonObj.Get("content").Get("type").MustString()
 	info.HtmlUrl = jsonObj.Get("content").Get("html_url").MustString()
@@ -113,18 +134,26 @@ func GetContent(token, login, path string) (response.FileInfo, error) {
 	if err != nil {
 		return info, err
 	}
-	if resp.RawResponse.StatusCode <= 201 {
+	if resp.RawResponse.StatusCode > 201 {
 		return info, errors.New("获取文件内容失败")
 	}
+	fmt.Println(resp.String())
 	jsonObj, err := simplejson.NewJson([]byte(resp.Body()))
-	info.Name = jsonObj.Get("content").Get("name").MustString()
-	info.Path = jsonObj.Get("content").Get("path").MustString()
-	info.Content = jsonObj.Get("content").Get("content").MustString()
-	info.Sha = jsonObj.Get("content").Get("sha").MustString()
-	info.Size = jsonObj.Get("content").Get("size").MustString()
-	info.Url = jsonObj.Get("content").Get("url").MustString()
-	info.FileType = jsonObj.Get("content").Get("type").MustString()
-	info.HtmlUrl = jsonObj.Get("content").Get("html_url").MustString()
-	info.DownloadUrl = jsonObj.Get("content").Get("download_url").MustString()
+	if err != nil {
+		return info, err
+	}
+	decStr, err := base64.StdEncoding.DecodeString(jsonObj.Get("content").MustString())
+	if err != nil {
+		return info, err
+	}
+	info.Content = string(decStr)
+	info.Name = jsonObj.Get("name").MustString()
+	info.Path = jsonObj.Get("path").MustString()
+	info.Sha = jsonObj.Get("sha").MustString()
+	info.Size = jsonObj.Get("size").MustInt()
+	info.Url = jsonObj.Get("url").MustString()
+	info.FileType = jsonObj.Get("type").MustString()
+	info.HtmlUrl = jsonObj.Get("html_url").MustString()
+	info.DownloadUrl = jsonObj.Get("download_url").MustString()
 	return info, err
 }

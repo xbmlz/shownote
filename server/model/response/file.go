@@ -5,7 +5,7 @@ type FileInfo struct {
 	Path        string `json:"path"`
 	Content     string `json:"content"`
 	Sha         string `json:"sha"`
-	Size        string `json:"size"`
+	Size        int    `json:"size"`
 	Url         string `json:"url"`
 	FileType    string `json:"type"`
 	HtmlUrl     string `json:"html_url"`

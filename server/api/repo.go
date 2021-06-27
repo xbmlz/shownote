@@ -12,10 +12,10 @@ import (
 
 // @Tags 仓库
 // @Summary 获取仓库信息
-// @Description 获取仓库信息，没有则初始化仓库
+// @Description 获取仓库信息，没有则初始化仓库，并返回.shownote/workspace.json的内容
 // @Param	token	query	string	true	"access_token"
 // @Param	login	query	string	true	"用户名"
-// @Success 200 {string string "{"success":true,"data":{},"msg":"账号初始化成功"}"
+// @Success 200 object response.FileInfo
 // @Router /repo/info [get]
 func GetRepoInfoAction(c *gin.Context) {
 	token := c.Query("token")
@@ -70,7 +70,7 @@ func GetRepoInfoAction(c *gin.Context) {
 // @Param	token	query	string	true	"access_token"
 // @Param	login	query	string	true	"用户名"
 // @Param	path	query	string	true	"文件路径"
-// @Success 200 {string string "{"success":true,"data":{},"msg":"账号初始化成功"}"
+// @Success 200 object response.FileInfo    "成功后返回值"
 // @Router /repo/content [get]
 func GetRepoContentAction(c *gin.Context) {
 	token := c.Query("token")
@@ -98,7 +98,7 @@ func GetRepoContentAction(c *gin.Context) {
 // @Description 新建文件
 // @Produce json
 // @Param	token	body  	request.FileInfo	true	"FileInfo"
-// @Success 200 {string string "{"success":true,"data":{},"msg":"账号初始化成功"}"
+// @Success 200 object response.FileInfo "成功后返回值"
 // @Router /repo/file [post]
 func CreateFileAction(c *gin.Context) {
 	var (
@@ -121,7 +121,7 @@ func CreateFileAction(c *gin.Context) {
 // @Description 更新文件
 // @Produce json
 // @Param	token	body  	request.FileInfo	true	"FileInfo"
-// @Success 200 {string string "{"success":true,"data":{},"msg":"账号初始化成功"}"
+// @Success 200 object response.FileInfo "成功后返回值"
 // @Router /repo/file [put]
 func UpdateFileAction(c *gin.Context) {
 	var (
