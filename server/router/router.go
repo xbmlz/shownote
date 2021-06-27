@@ -2,12 +2,14 @@ package router
 
 import (
 	"shownote/api"
+	"shownote/middleware"
 
 	"github.com/gin-gonic/gin"
 )
 
 func InitRouter() *gin.Engine {
 	router := gin.Default()
+	router.Use(middleware.Cors())
 	router.GET("/", api.LoginAction)
 
 	user := router.Group("user")

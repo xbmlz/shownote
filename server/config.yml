@@ -13,4 +13,3 @@ github:
   client-id: f5763537e579c4f97c56c69b80489a17e250d8186e48efbe3e3fba4c4b6c9558
   redirect-uri: http://127.0.0.1:8000/user/auth/github
   client-secret: 43896c34a76ebf45b408cd05436dd5e8cabea1e2c20c6e7ba9dfb6fde908c5ba
-  

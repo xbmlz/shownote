@@ -1,0 +1,12 @@
+version: "3"
+
+services: 
+server:
+    build:
+        context: ./server
+        dockerfile: ./Dockerfile
+    container_name: shownote-server
+    restart: always
+    ports:
+        - '8000:8000'
+        
