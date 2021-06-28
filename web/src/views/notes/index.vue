@@ -82,6 +82,7 @@ import {SearchOutlined, UnorderedListOutlined, PlusOutlined} from '@ant-design/i
 import {Multipane, MultipaneResizer} from "@/components/Multipane";
 import {getNowDate} from "@/utils/index.ts";
 import Vditor from "vditor";
+import {message} from "ant-design-vue";
 
 
 export default defineComponent({
@@ -105,7 +106,8 @@ export default defineComponent({
         note: [],
         trash: [],
         share: []
-      }
+      },
+      workspaceSha: ''
     });
 
     onMounted(() => {
@@ -126,14 +128,9 @@ export default defineComponent({
       window.localStorage.setItem('userInfo', JSON.stringify(info.data));
       epoContent('.shownote/workspace.json').then(res => {
         let workspace = JSON.parse(res.content)
-        const note = [
-          {
-            name: '我的笔记',
-            path: '',
-            child: workspace.note
-          }
-        ]
-        data.workspace.note = note;
+        console.log(workspace)
+        data.workspaceSha = res.sha;
+        data.workspace = workspace;
       })
     }
 
@@ -157,15 +154,29 @@ export default defineComponent({
       })
     }
 
+    //  更新目录JSON
+    const updateWorkspace = async (content: Array<[]>, sha: string) => {
+      const token = localStorage.token
+      const userInfo = JSON.parse(localStorage.userInfo)
+      const res = await service.put('/repo/file', {
+        "content": JSON.stringify(content),
+        "login": userInfo.login,
+        "path": '.shownote/workspace.json',
+        "sha": sha,
+        "token": token
+      })
+      //data.workspace = JSON.parse(res.data.content);
+      data.workspaceSha = res.data.sha;
+    }
     // 更新文件
-    const updateFile = async (content: any, path: string) => {
+    const updateFile = async (content: any, path: string, sha: string) => {
       const token = localStorage.token
       const userInfo = JSON.parse(localStorage.userInfo)
       await service.put('/repo/file', {
         "content": JSON.stringify(content),
         "login": userInfo.login,
         "path": path,
-        "sha": "",
+        "sha": sha,
         "token": token
       })
     }
@@ -179,7 +190,7 @@ export default defineComponent({
     }
     const onContextMenuClick = (node: object, menuKey: string) => {
       console.log(`treeKey: ${node.path}, menuKey: ${menuKey}`);
-
+      //  新建子文件夹
       if (menuKey === '1') {
         node.child.unshift({
           "name": "新文件夹",
@@ -196,8 +207,7 @@ export default defineComponent({
           "updateTime": getNowDate(),
           "child": []
         })
-        updateFile(data.workspace, '.shownote/workspace.json')
-        console.log(data.workspace)
+        updateWorkspace(data.workspace, data.workspaceSha)
       }
       if (menuKey === '2') {
         // {
@@ -206,6 +216,13 @@ export default defineComponent({
         //     "updateTime": getNowDate(),
         // }
       }
+      //  删除
+          if (menuKey === '3') {
+            if(node.child.length) {
+              return message.error('存在文件，不允许删除')
+            }
+            console.log(node)
+          }
 
     };
     const updateName = node => {
