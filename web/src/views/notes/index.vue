@@ -15,10 +15,10 @@
         <a-directory-tree :tree-data="workspace.note"
                           v-model:selectedKeys="selectedKeys"
                           :replace-fields="replaceFields"
+                          @select="selectTreeNode"
         >
           <template #title="node">
             <a-dropdown :trigger="['contextmenu']">
-
               <a-input v-if="node.isEdit" :value="node.name" @keyup.enter="updateName(node)"></a-input>
               <span v-else>{{ node.name }}</span>
               <template #overlay>
@@ -45,7 +45,7 @@
         </a-input>
         <a-divider></a-divider>
         <div class="info">
-          <p>0篇笔记</p>
+          <p>{{notes.length}}篇笔记</p>
           <a-dropdown placement="bottomLeft">
             <UnorderedListOutlined/>
             <template #overlay>
@@ -58,19 +58,29 @@
           </a-dropdown>
         </div>
         <a-divider></a-divider>
-        <a-empty :description="false">
-          <a-button type="primary" @click="createNode">新建笔记</a-button>
+        <ul v-if="notes.length">
+          <li v-for="(item,index) in notes" :key="index" @click="getNote(item)">
+            <h3>{{ item.name }}</h3>
+            <div>{{ item.updateTime }}</div>
+          </li>
+        </ul>
+        <a-empty :description="false" v-else>
+          <a-button type="primary" @click="createNote">新建笔记</a-button>
         </a-empty>
       </div>
     </div>
     <multipane-resizer></multipane-resizer>
     <div class="pane doc" :style="{ flexGrow: 1 }">
-      <div class="doc-title">
-        <a-input></a-input>
-        <a-button>保存</a-button>
-      </div>
-      <div id="vditor"></div>
+      <tempalte v-show="activeNote">
+        <div class="doc-title">
+          <a-input v-model="activeNote.name"></a-input>
+          <a-button @click="updateNote">保存</a-button>
+        </div>
+        <div id="vditor"></div>
+      </tempalte>
+      <a-empty v-show="!activeNote"></a-empty>
     </div>
+
   </multipane>
 </template>
 
@@ -99,6 +109,7 @@ export default defineComponent({
     window.localStorage.setItem('token', token);
 
     let data = reactive({
+      vditor:null,
       userInfo: {
         avatar_url: ""
       },
@@ -107,11 +118,16 @@ export default defineComponent({
         trash: [],
         share: []
       },
-      workspaceSha: ''
+      activeTreeNode: {},// 当前选中的目录
+      workspaceSha: '',
+      notes: [],
+      activeNote: {
+        name:''
+      }
     });
 
     onMounted(() => {
-      new Vditor("vditor", {
+      data.vditor = new Vditor("vditor", {
         height: '100%',
         toolbarConfig: {
           pin: true,
@@ -132,10 +148,6 @@ export default defineComponent({
         data.workspaceSha = res.sha;
         data.workspace = workspace;
       })
-    }
-
-    const createNote = () => {
-
     }
 
     // 获取仓库具体路径下的内容
@@ -169,16 +181,26 @@ export default defineComponent({
       data.workspaceSha = res.data.sha;
     }
     // 更新文件
-    const updateFile = async (content: any, path: string, sha: string) => {
+    const updateFile = async (content: any, path: string, sha: string, type?:string) => {
       const token = localStorage.token
       const userInfo = JSON.parse(localStorage.userInfo)
-      await service.put('/repo/file', {
-        "content": JSON.stringify(content),
-        "login": userInfo.login,
-        "path": path,
-        "sha": sha,
-        "token": token
-      })
+      if(type === 'post') {
+        await service.post('/repo/file', {
+          "content": JSON.stringify(content),
+          "login": userInfo.login,
+          "path": path,
+          "sha": sha,
+          "token": token
+        })
+      } else {
+        await service.put('/repo/file', {
+          "content": JSON.stringify(content),
+          "login": userInfo.login,
+          "path": path,
+          "sha": sha,
+          "token": token
+        })
+      }
     }
     init()
 
@@ -217,24 +239,79 @@ export default defineComponent({
         // }
       }
       //  删除
-          if (menuKey === '3') {
-            if(node.child.length) {
-              return message.error('存在文件，不允许删除')
-            }
-            console.log(node)
-          }
-
+      if (menuKey === '3') {
+        if (node.child.length) {
+          return message.error('存在文件，不允许删除')
+        }
+        console.log(node)
+      }
     };
     const updateName = node => {
 
+    }
+
+    function selectTreeNode(selectedKeys, e) {
+      data.activeTreeNode = e.selectedNodes;
+      let children = e.selectedNodes[0].children, notes = []
+      for (let i = 0; i < children.length; i++) {
+        if (!children[i].props.isDir) {
+          notes.push(children[i].props.dataRef)
+        }
+      }
+      data.notes = notes;
+    }
+
+    //  创建笔记的文件路径信息
+    function createNote() {
+      const dataRef = data.activeTreeNode[0].dataRef;
+      let activeNote = {
+        "name": "无标题.md",
+        "path": `${dataRef.path}/无标题.md`,
+        "isDir": false,
+        "isShare": false,
+        "sha": "",
+        "size": 0,
+        "url": "",
+        "type": "",
+        "html_url": "",
+        "download_url": "",
+        "createTime": getNowDate(),
+        "updateTime": getNowDate(),
+      }
+      data.notes.push(activeNote)
+      data.activeNote = activeNote
+      data.activeTreeNode[0].dataRef.child.push(activeNote);
+
+      updateWorkspace(data.workspace, data.workspaceSha)
+
+      updateFile('',activeNote.path,'', 'post')
+    }
+
+    // 获取文件详情
+    function getNote(item) {
+      data.activeNote = item;
+      epoContent(item.path).then(res => {
+        data.vditor.setValue(res.content)
+      })
+    }
+//  新建&&更新文件
+    function updateNote() {
+      console.log(data.vditor.getValue())
+      const content =data.vditor.getValue(),
+        path = data.activeNote.path,
+        sha = data.activeNote.sha;
+      updateFile(content,path,sha)
     }
 
     return {
       ...toRefs(data),
       selectedKeys,
       replaceFields,
+      selectTreeNode,
       onContextMenuClick,
       createNote,
+      getNote,
+      updateNote,
       updateName
     }
   },
