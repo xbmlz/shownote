@@ -9,7 +9,7 @@
     "ant-design-vue": "^2.2.0-beta.5",
     "axios": "^0.20.0-0",
     "sass": "^1.32.8",
-    "vditor": "^3.8.5",
+    "vditor": "^3.8.6",
     "vue": "^3.0.5",
     "vue-router": "^4.0.10"
   },
