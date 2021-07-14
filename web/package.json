@@ -6,7 +6,7 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "ant-design-vue": "^2.2.0-beta.5",
+    "ant-design-vue": "^2.2.2",
     "axios": "^0.20.0-0",
     "sass": "^1.32.8",
     "vditor": "^3.8.6",
@@ -14,6 +14,7 @@
     "vue-router": "^4.0.10"
   },
   "devDependencies": {
+    "@types/node": "^16.3.2",
     "@vitejs/plugin-vue": "^1.2.3",
     "@vue/compiler-sfc": "^3.0.5",
     "typescript": "^4.3.2",
