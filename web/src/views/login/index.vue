@@ -1,5 +1,5 @@
 <template>
-  <a-button @click="auth">授权</a-button>
+  <el-button @click="auth">授权</el-button>
 </template>
 
 <script lang="ts">
