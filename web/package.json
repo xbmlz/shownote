@@ -2,12 +2,13 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
+    "build": "vite build",
     "serve": "vite preview"
   },
   "dependencies": {
     "ant-design-vue": "^2.2.2",
     "axios": "^0.20.0-0",
+    "element-plus": "^1.0.2-beta.55",
     "sass": "^1.32.8",
     "vditor": "^3.8.6",
     "vue": "^3.0.5",
@@ -19,6 +20,7 @@
     "@vue/compiler-sfc": "^3.0.5",
     "typescript": "^4.3.2",
     "vite": "^2.3.8",
+    "vite-plugin-style-import": "^1.0.1",
     "vue-tsc": "^0.0.24"
   }
 }
