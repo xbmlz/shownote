@@ -57,13 +57,13 @@ func CreateFile(token, login, path, content string) (response.FileInfo, error) {
 	if err != nil {
 		return info, err
 	}
-	if resp.RawResponse.StatusCode > 201 {
-		return info, errors.New("创建文件失败")
-	}
-	fmt.Println(resp.String())
 	jsonObj, err := simplejson.NewJson([]byte(resp.Body()))
 	if err != nil {
 		return info, err
+	}
+	fmt.Println(jsonObj.Get("message").MustString())
+	if resp.RawResponse.StatusCode > 201 {
+		return info, errors.New(jsonObj.Get("message").MustString())
 	}
 	decStr, err := base64.StdEncoding.DecodeString(jsonObj.Get("content").MustString())
 	if err != nil {
@@ -97,13 +97,12 @@ func UpdateFile(token, login, path, content, sha string) (response.FileInfo, err
 	if err != nil {
 		return info, err
 	}
-	if resp.RawResponse.StatusCode > 201 {
-		return info, errors.New("更新文件失败")
-	}
-	fmt.Println(resp.String())
 	jsonObj, err := simplejson.NewJson([]byte(resp.Body()))
 	if err != nil {
 		return info, err
+	}
+	if resp.RawResponse.StatusCode > 201 {
+		return info, errors.New(jsonObj.Get("message").MustString())
 	}
 	decStr, err := base64.StdEncoding.DecodeString(jsonObj.Get("content").MustString())
 	if err != nil {
@@ -134,13 +133,12 @@ func GetContent(token, login, path string) (response.FileInfo, error) {
 	if err != nil {
 		return info, err
 	}
-	if resp.RawResponse.StatusCode > 201 {
-		return info, errors.New("获取文件内容失败")
-	}
-	fmt.Println(resp.String())
 	jsonObj, err := simplejson.NewJson([]byte(resp.Body()))
 	if err != nil {
 		return info, err
+	}
+	if resp.RawResponse.StatusCode > 201 {
+		return info, errors.New(jsonObj.Get("message").MustString())
 	}
 	decStr, err := base64.StdEncoding.DecodeString(jsonObj.Get("content").MustString())
 	if err != nil {

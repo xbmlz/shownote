@@ -27,6 +27,7 @@ func GetRepoInfoAction(c *gin.Context) {
 	)
 	if token == "" {
 		response.FailWithMessage("接口未授权", c)
+		return
 	}
 	// 0.  判断是否存在shownote
 	// 1.  存在
@@ -34,12 +35,14 @@ func GetRepoInfoAction(c *gin.Context) {
 	isExist, err = service.ExistRepo(token)
 	if err != nil {
 		response.FailWithMessage("获取仓库配置失败", c)
+		return
 	}
 	if !isExist {
 		// 2.  不存在
 		// 2.1 创建一个shownote的仓库
 		if err = service.CreateRepo(token, global.REPO_NAME); err != nil {
-			response.FailWithMessage("仓库初始化失败", c)
+			response.FailWithMessage("仓库初始化失败, "+err.Error(), c)
+			return
 		}
 		// 2.2 创建一个.shownote文件夹
 		// 2.3 在.shownote下创建一个workspace.json的配置文件
@@ -51,15 +54,14 @@ func GetRepoInfoAction(c *gin.Context) {
 }`
 		encodeStr := base64.StdEncoding.EncodeToString([]byte(workspaceJson))
 		if fileInfo, err = service.CreateFile(token, login, filePath, encodeStr); err != nil {
-			response.FailWithMessage("仓库配置文件失败", c)
+			response.FailWithMessage("仓库初始化失败, "+err.Error(), c)
+			return
 		}
 	}
 	fileInfo, err = service.GetContent(token, login, global.WORKSPACE_PATH)
 	if err != nil {
-		response.FailWithMessage("获取文件内容失败", c)
-	}
-	if err != nil {
-		response.FailWithMessage("文件解密失败", c)
+		response.FailWithMessage("仓库信息获取失败, "+err.Error(), c)
+		return
 	}
 	response.OkWithDetailed(fileInfo, "账号初始化成功", c)
 }
@@ -82,13 +84,12 @@ func GetRepoContentAction(c *gin.Context) {
 	)
 	if token == "" {
 		response.FailWithMessage("接口未授权", c)
+		return
 	}
 	fileInfo, err = service.GetContent(token, login, path)
 	if err != nil {
-		response.FailWithMessage("获取文件内容失败", c)
-	}
-	if err != nil {
-		response.FailWithMessage("文件解密失败", c)
+		response.FailWithMessage("获取文件内容失败, "+err.Error(), c)
+		return
 	}
 	response.OkWithData(fileInfo, c)
 }
@@ -106,12 +107,13 @@ func CreateFileAction(c *gin.Context) {
 		err         error
 		fileInfo    response.FileInfo
 	)
-	if err := c.ShouldBindJSON(&reqFileInfo); err != nil {
+	if err = c.ShouldBindJSON(&reqFileInfo); err != nil {
 		response.FailWithMessage("参数解析失败", c)
 		return
 	}
 	if fileInfo, err = service.CreateFile(reqFileInfo.Token, reqFileInfo.Login, reqFileInfo.Path, reqFileInfo.Content); err != nil {
-		response.FailWithMessage("创建文件失败", c)
+		response.FailWithMessage("创建文件失败, "+err.Error(), c)
+		return
 	}
 	response.OkWithData(fileInfo, c)
 }
@@ -135,7 +137,8 @@ func UpdateFileAction(c *gin.Context) {
 	}
 	// encodeStr := base64.StdEncoding.EncodeToString([]byte(content))
 	if fileInfo, err = service.UpdateFile(reqFileInfo.Token, reqFileInfo.Login, reqFileInfo.Path, reqFileInfo.Content, reqFileInfo.Sha); err != nil {
-		response.FailWithMessage("创建文件失败", c)
+		response.FailWithMessage("更新文件失败, "+err.Error(), c)
+		return
 	}
 	response.OkWithData(fileInfo, c)
 }
