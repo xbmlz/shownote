@@ -9,12 +9,12 @@
     "ant-design-vue": "^2.2.2",
     "axios": "^0.20.0-0",
     "element-plus": "^1.0.2-beta.55",
-    "sass": "^1.32.8",
     "vditor": "^3.8.6",
     "vue": "^3.0.5",
     "vue-router": "^4.0.10"
   },
   "devDependencies": {
+    "sass": "^1.35.2",
     "@types/node": "^16.3.2",
     "@vitejs/plugin-vue": "^1.2.3",
     "@vue/compiler-sfc": "^3.0.5",

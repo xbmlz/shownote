@@ -49,6 +49,7 @@ service.interceptors.response.use(
                 return data;
             } else {
                 message.error(data.message);
+                return Promise.reject(new Error(res.data.message || "Error"));
             }
         } else {
             message.error("网络错误");
