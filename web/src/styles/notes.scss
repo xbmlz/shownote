@@ -1,6 +1,7 @@
 $bg: #fff;
 $border: #d1d5da;
 
+
 .custom-resizer {
   width: 100%;
   height: 100vh;
@@ -16,6 +17,10 @@ $border: #d1d5da;
     width: 20%;
     min-width: 200px;
     max-width: 30%;
+    -moz-user-select: none; /*火狐*/
+    -webkit-user-select: none; /*webkit浏览器*/
+    -ms-user-select: none; /*IE10*/
+    user-select: none; /*选中文字时避免出现蓝色背景*/
 
   }
 
@@ -40,12 +45,16 @@ $border: #d1d5da;
 }
 
 .menu {
+  border-right: 1px solid $border;
+
   .avatar {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    padding: 8px 10px;
     border-bottom: 1px solid $border;
+
     & > div {
       display: flex;
       align-items: center;
@@ -75,6 +84,12 @@ $border: #d1d5da;
 }
 
 .doc {
+  flex: 1;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   &-title {
     display: flex;
     margin-bottom: 10px;
@@ -103,10 +118,11 @@ $border: #d1d5da;
   background-color: white;
 
   .menu-item {
-    line-height: 20px;
+    line-height: 16px;
     text-align: left;
     font-size: 14px;
     color: #606266;
+    cursor: pointer;
     list-style-type: none;
     padding: 8px;
   }

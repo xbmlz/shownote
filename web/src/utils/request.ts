@@ -1,5 +1,5 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
-import { message } from 'ant-design-vue';
+import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse} from "axios";
+import {message} from 'ant-design-vue';
 
 export interface ResponseData {
     code: number;
@@ -14,7 +14,7 @@ export interface ResponseData {
 let service: AxiosInstance | any;
 if (import.meta.env.MODE === "development") {
     service = axios.create({
-        baseURL: "http://127.0.0.1:8000/", // api 的 base_url
+        baseURL: "http://10.0.2.172:8000/", // api 的 base_url
         timeout: 50000 // 请求超时时间
     });
 } else {
@@ -28,7 +28,6 @@ if (import.meta.env.MODE === "development") {
 // request 拦截器 axios 的一些配置
 service.interceptors.request.use(
     (config: AxiosRequestConfig) => {
-        console.log(config)
         return config;
     },
     (error: any) => {
