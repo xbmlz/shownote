@@ -24,7 +24,7 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/repo/content": {
+        "/repo/file": {
             "get": {
                 "description": "获取仓库具体路径下的内容",
                 "tags": [
@@ -48,8 +48,8 @@ var doc = `{
                     },
                     {
                         "type": "string",
-                        "description": "文件路径",
-                        "name": "path",
+                        "description": "文件UID",
+                        "name": "uid",
                         "in": "query",
                         "required": true
                     }
@@ -62,9 +62,7 @@ var doc = `{
                         }
                     }
                 }
-            }
-        },
-        "/repo/file": {
+            },
             "put": {
                 "description": "更新文件",
                 "produces": [
@@ -122,6 +120,51 @@ var doc = `{
                         }
                     }
                 }
+            },
+            "delete": {
+                "description": "删除文件",
+                "tags": [
+                    "仓库"
+                ],
+                "summary": "删除文件",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "access_token",
+                        "name": "token",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "用户名",
+                        "name": "login",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "文件UID",
+                        "name": "uid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "文件sha",
+                        "name": "sha",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功后返回值",
+                        "schema": {
+                            "$ref": "#/definitions/response.FileInfo"
+                        }
+                    }
+                }
             }
         },
         "/repo/info": {
@@ -150,6 +193,97 @@ var doc = `{
                 "responses": {
                     "200": {
                         "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.FileInfo"
+                        }
+                    }
+                }
+            }
+        },
+        "/repo/upload": {
+            "post": {
+                "description": "上传文件",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "仓库"
+                ],
+                "summary": "上传文件",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "文件类型,image|viodo|audio",
+                        "name": "type",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功后返回值",
+                        "schema": {
+                            "$ref": "#/definitions/response.FileInfo"
+                        }
+                    }
+                }
+            }
+        },
+        "/repo/workspace": {
+            "get": {
+                "description": "获取workspace内容",
+                "tags": [
+                    "仓库"
+                ],
+                "summary": "获取workspace内容",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "access_token",
+                        "name": "token",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "用户名",
+                        "name": "login",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功后返回值",
+                        "schema": {
+                            "$ref": "#/definitions/response.FileInfo"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "更新workspace",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "仓库"
+                ],
+                "summary": "更新workspace",
+                "parameters": [
+                    {
+                        "description": "FileInfo",
+                        "name": "token",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.FileInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功后返回值",
                         "schema": {
                             "$ref": "#/definitions/response.FileInfo"
                         }
@@ -227,13 +361,13 @@ var doc = `{
                 "login": {
                     "type": "string"
                 },
-                "path": {
-                    "type": "string"
-                },
                 "sha": {
                     "type": "string"
                 },
                 "token": {
+                    "type": "string"
+                },
+                "uid": {
                     "type": "string"
                 }
             }
@@ -263,6 +397,9 @@ var doc = `{
                     "type": "integer"
                 },
                 "type": {
+                    "type": "string"
+                },
+                "uid": {
                     "type": "string"
                 },
                 "url": {

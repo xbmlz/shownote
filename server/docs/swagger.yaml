@@ -6,11 +6,11 @@ definitions:
         type: string
       login:
         type: string
-      path:
-        type: string
       sha:
         type: string
       token:
+        type: string
+      uid:
         type: string
     type: object
   response.FileInfo:
@@ -31,6 +31,8 @@ definitions:
         type: integer
       type:
         type: string
+      uid:
+        type: string
       url:
         type: string
     type: object
@@ -40,7 +42,38 @@ info:
   title: ShowNote API
   version: 0.0.1
 paths:
-  /repo/content:
+  /repo/file:
+    delete:
+      description: 删除文件
+      parameters:
+      - description: access_token
+        in: query
+        name: token
+        required: true
+        type: string
+      - description: 用户名
+        in: query
+        name: login
+        required: true
+        type: string
+      - description: 文件UID
+        in: query
+        name: uid
+        required: true
+        type: string
+      - description: 文件sha
+        in: query
+        name: sha
+        required: true
+        type: string
+      responses:
+        "200":
+          description: 成功后返回值
+          schema:
+            $ref: '#/definitions/response.FileInfo'
+      summary: 删除文件
+      tags:
+      - 仓库
     get:
       description: 获取仓库具体路径下的内容
       parameters:
@@ -54,9 +87,9 @@ paths:
         name: login
         required: true
         type: string
-      - description: 文件路径
+      - description: 文件UID
         in: query
-        name: path
+        name: uid
         required: true
         type: string
       responses:
@@ -67,7 +100,6 @@ paths:
       summary: 获取仓库具体路径下的内容
       tags:
       - 仓库
-  /repo/file:
     post:
       description: 新建文件
       parameters:
@@ -126,6 +158,66 @@ paths:
           schema:
             $ref: '#/definitions/response.FileInfo'
       summary: 获取仓库信息
+      tags:
+      - 仓库
+  /repo/upload:
+    post:
+      description: 上传文件
+      parameters:
+      - description: 文件类型,image|viodo|audio
+        in: query
+        name: type
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功后返回值
+          schema:
+            $ref: '#/definitions/response.FileInfo'
+      summary: 上传文件
+      tags:
+      - 仓库
+  /repo/workspace:
+    get:
+      description: 获取workspace内容
+      parameters:
+      - description: access_token
+        in: query
+        name: token
+        required: true
+        type: string
+      - description: 用户名
+        in: query
+        name: login
+        required: true
+        type: string
+      responses:
+        "200":
+          description: 成功后返回值
+          schema:
+            $ref: '#/definitions/response.FileInfo'
+      summary: 获取workspace内容
+      tags:
+      - 仓库
+    put:
+      description: 更新workspace
+      parameters:
+      - description: FileInfo
+        in: body
+        name: token
+        required: true
+        schema:
+          $ref: '#/definitions/request.FileInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功后返回值
+          schema:
+            $ref: '#/definitions/response.FileInfo'
+      summary: 更新workspace
       tags:
       - 仓库
   /user/auth/:repo:

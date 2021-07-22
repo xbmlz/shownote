@@ -1,6 +1,7 @@
 package response
 
 type FileInfo struct {
+	Uid         string `json:"uid"`
 	Name        string `json:"name"`
 	Path        string `json:"path"`
 	Content     string `json:"content"`
@@ -10,4 +11,5 @@ type FileInfo struct {
 	FileType    string `json:"type"`
 	HtmlUrl     string `json:"html_url"`
 	DownloadUrl string `json:"download_url"`
+	Html        string `json:"html"`
 }

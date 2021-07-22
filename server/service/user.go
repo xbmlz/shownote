@@ -20,7 +20,6 @@ func RefreshToken(refreshToken string) (global.Token, error) {
 	if err != nil {
 		return token, err
 	}
-	fmt.Println(resp.String())
 	json.Unmarshal(resp.Body(), &token)
 	return token, nil
 }
@@ -54,7 +53,6 @@ func GetToken(code, repo string) (global.Token, error) {
 	if err != nil {
 		return token, err
 	}
-	fmt.Println(resp.String())
 	json.Unmarshal(resp.Body(), &token)
 	return token, nil
 }

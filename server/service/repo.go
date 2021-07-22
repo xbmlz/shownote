@@ -47,7 +47,6 @@ func CreateFile(token, login, path, content string) (response.FileInfo, error) {
 	var (
 		info response.FileInfo
 	)
-	content = base64.StdEncoding.EncodeToString([]byte(content))
 	client := resty.New()
 	resp, err := client.R().
 		SetHeader("Content-Type", "application/json").
@@ -61,7 +60,6 @@ func CreateFile(token, login, path, content string) (response.FileInfo, error) {
 	if err != nil {
 		return info, err
 	}
-	fmt.Println(jsonObj.Get("message").MustString())
 	if resp.RawResponse.StatusCode > 201 {
 		return info, errors.New(jsonObj.Get("message").MustString())
 	}
@@ -130,6 +128,43 @@ func GetContent(token, login, path string) (response.FileInfo, error) {
 	resp, err := client.R().
 		SetQueryParam("access_token", token).
 		Get(fmt.Sprintf("https://gitee.com/api/v5/repos/%s/%s/contents/%s", login, global.REPO_NAME, path))
+	if err != nil {
+		return info, err
+	}
+	jsonObj, err := simplejson.NewJson([]byte(resp.Body()))
+	if err != nil {
+		return info, err
+	}
+	if resp.RawResponse.StatusCode > 201 {
+		return info, errors.New(jsonObj.Get("message").MustString())
+	}
+	decStr, err := base64.StdEncoding.DecodeString(jsonObj.Get("content").MustString())
+	if err != nil {
+		return info, err
+	}
+	info.Content = string(decStr)
+	info.Name = jsonObj.Get("name").MustString()
+	info.Path = jsonObj.Get("path").MustString()
+	info.Sha = jsonObj.Get("sha").MustString()
+	info.Size = jsonObj.Get("size").MustInt()
+	info.Url = jsonObj.Get("url").MustString()
+	info.FileType = jsonObj.Get("type").MustString()
+	info.HtmlUrl = jsonObj.Get("html_url").MustString()
+	info.DownloadUrl = jsonObj.Get("download_url").MustString()
+	return info, err
+}
+
+func DeleteFile(token, login, path, sha string) (response.FileInfo, error) {
+	// https://gitee.com/api/v5/repos/{owner}/{repo}/contents(/{path})
+	var (
+		info response.FileInfo
+	)
+	client := resty.New()
+	resp, err := client.R().
+		SetQueryParam("access_token", token).
+		SetQueryParam("sha", sha).
+		SetQueryParam("message", global.COMMIT_MSG).
+		Delete(fmt.Sprintf("https://gitee.com/api/v5/repos/%s/%s/contents/%s", login, global.REPO_NAME, path))
 	if err != nil {
 		return info, err
 	}

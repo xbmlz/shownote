@@ -21,9 +21,13 @@ func InitRouter() *gin.Engine {
 	repo := router.Group("repo")
 	{
 		repo.GET("/info", api.GetRepoInfoAction)
-		repo.GET("/content", api.GetRepoContentAction)
+		repo.GET("/workspace", api.GetWorkspaceAction)
+		repo.PUT("/workspace", api.UpdateWorkspaceAction)
+		repo.GET("/file", api.GetFileAction)
 		repo.POST("/file", api.CreateFileAction)
 		repo.PUT("/file", api.UpdateFileAction)
+		repo.DELETE("/file", api.DeleteFileAction)
+		repo.POST("/upload", api.UploadFileAction)
 	}
 	return router
 }
