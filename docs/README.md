@@ -7,20 +7,22 @@ sn-repo
 └── .shownote -- 内置文件夹
 |     ├── workspace.json 工作空间配置文件
 |     └── config.json    用户配置
-├── images -- 图片
-├── video  -- 视频
-├── audio  -- 音频
+├── assets -- 静态资源
+├── ├── img     图片
+├── ├── audio   声音
+|   └── video   用户配置
 ├── trash  -- 回收站
-└── note   -- 笔记目录
+└── notes  -- 笔记目录
 ```
 
 workspace.json
 
 ```json
 {
-	"note": [
+	"notes": [
           {
             "name": "web开发",
+	    "uid": "dsdasdasdsadasd5dasd8d4fafafa3324",
             "path": "/web开发",
             "isDir": true,
             "isShare": false,
@@ -35,6 +37,7 @@ workspace.json
             "child": [
                 {
                     "name": "web开发",
+		    "uid": "dsdasdasdsadasd5dasd8d4fafafa3324",
                     "path": "/web开发/1.md",
                     "isDir": true,
                     "isShare": false,
@@ -49,6 +52,7 @@ workspace.json
                 },
                 {
                     "name": "web开发",
+		    "uid": "dsdasdasdsadasd5dasd8d4fafafa3324",
                     "path": "/web开发/1.md",
                     "isDir": true,
                     "isShare": false,
