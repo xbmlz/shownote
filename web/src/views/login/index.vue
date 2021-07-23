@@ -1,5 +1,6 @@
 <template>
   <div class="login-modal">
+    <img class="duck" src="@/assets/duck.gif" alt="">
     <div class="login">
       <div class="header">
         <h2>授权登录</h2>
@@ -14,6 +15,7 @@
         </li>
       </ul>
     </div>
+    <img class="duck" src="@/assets/duck.gif" alt="">
   </div>
 
 </template>
