@@ -1,7 +1,7 @@
 server:
   port: 8000
 web:
-  index-url: http://127.0.0.1:8000/static/index.html
+  index-url: http://127.0.0.1:3000/notes
   error-url: http://127.0.0.1:8000/static/error.html
 gitee:
   token-url: "https://gitee.com/oauth/token"
