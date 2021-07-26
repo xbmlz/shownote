@@ -1,6 +1,6 @@
 <template>
   <multipane class="custom-resizer" layout="vertical">
-    <div class="pane menu" oncontextmenu="return false;">
+    <div class="pane menu" @contextmenu="rightClick($event,{})" @click="handleMenu">
       <div class="avatar">
         <div>
           <el-avatar
@@ -37,8 +37,10 @@
     <div class="pane doc" :style="{ flexGrow: 1 }">
       <div v-show="activeNote.name" v-loading="isLoading" style="width: 100%;">
         <div class="doc-title">
-          <el-input v-model="activeNote.name" readonly></el-input>
-          <el-button @click="updateNote" :loading="saveLoading" size="mini" type="primary">保存</el-button>
+          <el-input v-model="activeNote.name" readonly size="mini"></el-input>
+          <el-button @click="updateNote" :loading="saveLoading" size="mini" type="primary" icon="el-icon-s-promotion">
+            保存
+          </el-button>
         </div>
         <div id="vditor"></div>
       </div>
@@ -56,13 +58,13 @@
   </el-dialog>
 
   <!--鼠标右键菜单栏 -->
-  <div v-show="showRightMenu" class="menu-modal" @contextmenu="showRightMenu = false;">
+  <div v-show="showRightMenu" class="menu-modal" oncontextmenu="return false;">
     <ul id="menu" class="right-menu">
       <li class="menu-item" @click="createFile" v-if="activeTreeNode.isDir">新建文件</li>
-      <li class="menu-item" @click="createDir" v-if="activeTreeNode.isDir">新建文件夹</li>
+      <li class="menu-item" @click="createDir" v-if="activeTreeNode.isDir !== false">新建文件夹</li>
       <li class="menu-item" @click="updateDir" v-if="activeTreeNode.isDir">重命名</li>
-      <li class="menu-item" @click="updateFileName" v-if="!activeTreeNode.isDir">重命名</li>
-      <li class="menu-item" @click="deleteFile" v-if="!activeTreeNode.isDir">删除</li>
+      <li class="menu-item" @click="updateFileName" v-if="activeTreeNode.isDir === false">重命名</li>
+      <li class="menu-item" @click="deleteFile" v-if="activeTreeNode.isDir === false">删除</li>
     </ul>
   </div>
 </template>
@@ -105,6 +107,7 @@ export default defineComponent({
       share: [],
       saveLoading: false,
       isLoading: true, // 文件内容获取中
+      isHideToolbar: false,
       // dialog
       isDialog: false,
       dialogTitle: '新建文件夹',
@@ -136,7 +139,7 @@ export default defineComponent({
         height: "100%",
         toolbarConfig: {
           pin: true,
-          hide: false
+          hide: this.isHideToolbar
         },
         upload: {
           url: 'http://10.0.2.172:8000/repo/upload',
@@ -162,6 +165,9 @@ export default defineComponent({
         this.share = share;
         this.workspaceSha = res.sha;
       });
+    },
+    handleMenu(e) {
+      this.$refs['noteTree'].setCurrentKey()
     },
     //  新建文件夹
     createDir() {
@@ -290,6 +296,7 @@ export default defineComponent({
         } else {
           fileArr = parentData.child
         }
+
         this.rename = this.validateName(this.rename, false, fileArr, node.path);
         // 更新
         this.activeTreeNode.name = this.rename;
@@ -372,6 +379,12 @@ export default defineComponent({
 
         this.updateWorkspace().then(() => {
           this.isDialog = false;
+          this.$nextTick(() => {
+            this.$refs['noteTree'].setCurrentKey(res.data.path)
+            //  创建成功后打开文件
+            const currebtData = this.$refs['noteTree'].getCurrentNode()
+            this.handleNodeClick(currebtData)
+          })
         })
       })
     },
@@ -407,6 +420,7 @@ export default defineComponent({
         this.getRepoFile(data.uid).then(res => {
           this.isLoading = false;
           this.activeTreeNode.sha = res.sha;
+          this.vditor.focus();
           this.vditor.setValue(res.content);
         }).catch(() => {
           this.isLoading = false;
@@ -414,7 +428,11 @@ export default defineComponent({
       }
     },
     // 右键菜单
-    rightClick(event, data, node, obj) {
+    rightClick(event, data) {
+      if (JSON.stringify(data) === '{}') {
+        this.$refs['noteTree'].setCurrentKey()
+        this.vditor.disabled()
+      }
       this.activeTreeNode = data;
       this.showRightMenu = false // 先把模态框关死，目的是：第二次或者第n次右键鼠标的时候 它默认的是true
       this.showRightMenu = true
@@ -423,6 +441,7 @@ export default defineComponent({
       menu.style.top = event.clientY - 5 + 'px'
       // 给整个document添加监听鼠标事件，点击任何位置执行closeRightMenu方法，及时将菜单关闭
       document.addEventListener('click', this.closeRightMenu)
+      event.preventDefault()
     },
     closeRightMenu() {
       this.showRightMenu = false
@@ -519,7 +538,6 @@ export default defineComponent({
           if (this.activeTreeNode.path) {
             this.$refs['noteTree'].setCurrentKey(this.activeTreeNode.path);
           }
-
         })
 
         this.isDialog = false;

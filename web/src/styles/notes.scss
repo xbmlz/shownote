@@ -1,5 +1,5 @@
 $bg: #fff;
-$border: #d1d5da;
+$border: #e6e9ed;
 
 
 .custom-resizer {
@@ -93,6 +93,19 @@ $border: #d1d5da;
   &-title {
     display: flex;
     margin-bottom: 10px;
+    padding-left: 26px;
+
+    .el-input {
+      font-size: 20px;
+
+      ::v-deep(.el-input__inner) {
+        border: none;
+      }
+    }
+
+    .el-button {
+      padding: 5px 15px 4px;
+    }
   }
 }
 
@@ -100,12 +113,19 @@ $border: #d1d5da;
   height: calc(100vh - 80px);
 }
 
+::v-deep(.vditor) {
+  --border-color: transparent;
+  --toolbar-background-color: #fff;
+
+  .vditor-toolbar__item {
+    margin: 0 4px;
+  }
+}
+
 .menu-modal {
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
   z-index: 8;
 }
 
