@@ -1,5 +1,5 @@
-import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse} from "axios";
-import {message} from 'ant-design-vue';
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
+import { message } from 'ant-design-vue';
 
 export interface ResponseData {
     code: number;
@@ -12,18 +12,11 @@ export interface ResponseData {
 
 // 创建 axios 实例
 let service: AxiosInstance | any;
-if (import.meta.env.MODE === "development") {
-    service = axios.create({
-        baseURL: "http://10.0.2.172:8000/", // api 的 base_url
-        timeout: 50000 // 请求超时时间
-    });
-} else {
-    // 生产环境下
-    service = axios.create({
-        baseURL: "/api",
-        timeout: 50000
-    });
-}
+localStorage.baseURL = import.meta.env.MODE === "development" ? 'http://10.0.2.199:8000/' : window.location.origin + '/api/'
+service = axios.create({
+    baseURL: localStorage.baseURL, // api 的 base_url
+    timeout: 50000 // 请求超时时间
+});
 
 // request 拦截器 axios 的一些配置
 service.interceptors.request.use(
