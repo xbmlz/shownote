@@ -1,39 +1,39 @@
 <template>
   <multipane class="custom-resizer" layout="vertical">
     <div
-      class="pane menu"
-      @contextmenu="rightClick($event, {})"
-      @click="handleMenu"
+        class="pane menu"
+        @contextmenu="rightClick($event, {})"
+        @click="handleMenu"
     >
       <div class="avatar">
         <div>
           <el-avatar
-            shape="square"
-            size="large"
-            :src="userInfo.avatar_url"
+              shape="square"
+              size="large"
+              :src="userInfo.avatar_url"
           ></el-avatar>
           <h2>{{ userInfo.name }}</h2>
         </div>
         <el-button
-          type="primary"
-          @click="createDir"
-          size="mini"
-          icon="el-icon-plus"
-          circle
+            type="primary"
+            @click="createDir"
+            size="mini"
+            icon="el-icon-plus"
+            circle
         ></el-button>
       </div>
       <el-tree
-        ref="noteTree"
-        highlight-current
-        node-key="path"
-        :data="notes"
-        :props="defaultProps"
-        :default-expanded-keys="expandedKeys"
-        empty-text="暂无数据"
-        @node-expand="handleNodeExpand"
-        @node-collapse="handleNodeCollapse"
-        @node-click="handleNodeClick"
-        @node-contextmenu="rightClick"
+          ref="noteTree"
+          highlight-current
+          node-key="path"
+          :data="notes"
+          :props="defaultProps"
+          :default-expanded-keys="expandedKeys"
+          empty-text="暂无数据"
+          @node-expand="handleNodeExpand"
+          @node-collapse="handleNodeCollapse"
+          @node-click="handleNodeClick"
+          @node-contextmenu="rightClick"
       >
         <template #default="{ node, data }">
           <div>
@@ -50,11 +50,11 @@
         <div class="doc-title">
           <el-input v-model="activeNote.name" readonly size="mini"></el-input>
           <el-button
-            @click="updateNote"
-            :loading="saveLoading"
-            size="mini"
-            type="primary"
-            icon="el-icon-s-promotion"
+              @click="updateNote"
+              :loading="saveLoading"
+              size="mini"
+              type="primary"
+              icon="el-icon-s-promotion"
           >
             保存
           </el-button>
@@ -64,18 +64,18 @@
       <el-empty v-show="!activeNote.name" description="暂无数据"></el-empty>
     </div>
   </multipane>
-
   <!-- 模态-文件及文件夹命名 -->
   <el-dialog v-model="isDialog" :title="dialogTitle" width="450px">
     <el-input
-      v-model="rename"
-      ref="rename"
-      @keyup.enter="updateName"
+        v-model="rename"
+        ref="rename"
+        @keyup.enter="updateName"
     ></el-input>
     <template #footer>
       <el-button size="small" @click="isDialog = false">取消</el-button>
       <el-button type="primary" size="small" @click="updateName"
-        >确定</el-button
+      >确定
+      </el-button
       >
     </template>
   </el-dialog>
@@ -87,9 +87,9 @@
         新建文件
       </li>
       <li
-        class="menu-item"
-        @click="createDir"
-        v-if="activeTreeNode.isDir !== false"
+          class="menu-item"
+          @click="createDir"
+          v-if="activeTreeNode.isDir !== false"
       >
         新建文件夹
       </li>
@@ -97,16 +97,16 @@
         重命名
       </li>
       <li
-        class="menu-item"
-        @click="updateFileName"
-        v-if="activeTreeNode.isDir === false"
+          class="menu-item"
+          @click="updateFileName"
+          v-if="activeTreeNode.isDir === false"
       >
         重命名
       </li>
       <li
-        class="menu-item"
-        @click="deleteFile"
-        v-if="activeTreeNode.isDir === false"
+          class="menu-item"
+          @click="deleteDir"
+          v-if="activeTreeNode.isDir === true && !activeTreeNode.child.length"
       >
         删除
       </li>
@@ -115,11 +115,11 @@
 </template>
 
 <script>
-import { ref, defineComponent, onMounted, reactive, toRefs } from "vue";
-import { useRouter, useRoute } from "vue-router";
+import {ref, defineComponent, onMounted, reactive, toRefs} from "vue";
+import {useRouter, useRoute} from "vue-router";
 import service from "@/utils/request";
-import { Multipane, MultipaneResizer } from "@/components/Multipane";
-import { getNowDate } from "@/utils/date";
+import {Multipane, MultipaneResizer} from "@/components/Multipane";
+import {getNowDate} from "@/utils/date";
 import Vditor from "vditor";
 
 export default defineComponent({
@@ -163,17 +163,21 @@ export default defineComponent({
     const router = useRouter();
     const route = useRoute();
     this.token = route.query.token || "";
-    if (!this.token) {
-      localStorage.token = "";
+    if (this.token) {
+      location.href = location.origin + '/#/notes'
+      localStorage.token = this.token;
+    }
+    if (!localStorage.token) {
       router.push("/login");
     } else {
-      localStorage.token = this.token;
+      this.token = localStorage.token;
       this.init();
     }
   },
   methods: {
     async init() {
       const info = await service.get(`/user/info?token=${this.token}`);
+      console.log(info)
       this.userInfo = info.data;
       this.initVditor();
       this.initData();
@@ -204,7 +208,7 @@ export default defineComponent({
     async initData() {
       this.initRepo().then((res) => {
         let workspace = JSON.parse(res.content);
-        const { notes, trash, share } = workspace;
+        const {notes, trash, share} = workspace;
         this.notes = notes;
         this.trash = trash;
         this.share = share;
@@ -213,6 +217,7 @@ export default defineComponent({
     },
     handleMenu(e) {
       this.$refs["noteTree"].setCurrentKey();
+      this.activeTreeNode = {}
     },
     //  新建文件夹
     createDir() {
@@ -266,35 +271,35 @@ export default defineComponent({
       };
       this.saveLoading = true;
       this.updateFile(params)
-        .then((res) => {
-          this.$message.success(res.msg);
-          this.saveLoading = false;
-          this.activeNote = {
-            name: this.activeNote.name,
-            path: res.data.path,
-            uid: res.data.uid,
-            isDir: false,
-            isShare: false,
-            sha: res.data.sha,
-            size: res.data.size,
-            url: res.data.url,
-            type: res.data.type,
-            html_url: res.data.html_url,
-            download_url: res.data.download_url,
-            createTime: getNowDate(),
-            updateTime: getNowDate(),
-            child: [],
-          };
-          this.replaceTreeNode(this.activeNote, this.notes);
-        })
-        .catch(() => {
-          this.saveLoading = false;
-        });
+          .then((res) => {
+            this.$message.success(res.msg);
+            this.saveLoading = false;
+            this.activeNote = {
+              name: this.activeNote.name,
+              path: res.data.path,
+              uid: res.data.uid,
+              isDir: false,
+              isShare: false,
+              sha: res.data.sha,
+              size: res.data.size,
+              url: res.data.url,
+              type: res.data.type,
+              html_url: res.data.html_url,
+              download_url: res.data.download_url,
+              createTime: getNowDate(),
+              updateTime: getNowDate(),
+              child: [],
+            };
+            this.replaceTreeNode(this.activeNote, this.notes);
+          })
+          .catch(() => {
+            this.saveLoading = false;
+          });
     },
     //  更新目录空间节点信息
     replaceTreeNode(data, notes) {
       for (let i in notes) {
-        let { path, child } = notes[i];
+        let {path, child} = notes[i];
         if (path === data.path) {
           notes[i] = data;
           this.updateWorkspace();
@@ -306,7 +311,7 @@ export default defineComponent({
     //  移除目录空间节点信息
     removeTreeNode(data, notes) {
       for (let i in notes) {
-        let { path, child } = notes[i];
+        let {path, child} = notes[i];
         if (path === data.path) {
           notes.splice(i, 1);
           this.activeTreeNode = {};
@@ -323,7 +328,7 @@ export default defineComponent({
       if (this.type === "addDir") {
         // 检测重命名
         let node = this.$refs["noteTree"].getNode(this.activeTreeNode.path);
-        let childNode = node ? node.data.child : [];
+        let childNode = node ? node.data.child : this.notes;
         this.rename = this.validateName(this.rename, true, childNode);
         this.addDir();
       }
@@ -338,14 +343,14 @@ export default defineComponent({
         // 检测重命名
         let node = this.$refs["noteTree"].getNode(this.activeTreeNode.path);
         let fileArr = [],
-          parentData = node.parent.data;
+            parentData = node.parent.data;
         if (parentData.constructor === Array) {
           fileArr = parentData;
         } else {
           fileArr = parentData.child;
         }
-
-        this.rename = this.validateName(this.rename, false, fileArr, node.path);
+        let isDir = this.type === "updateDir";
+        this.rename = this.validateName(this.rename, isDir, fileArr, node.path);
         // 更新
         this.activeTreeNode.name = this.rename;
         this.replaceTreeNode(this.activeTreeNode, this.notes);
@@ -360,23 +365,23 @@ export default defineComponent({
       if (this.activeTreeNode.isDir) {
         path = `${this.activeTreeNode.path}/${this.rename}`;
         this.$refs["noteTree"].append(
-          {
-            name: this.rename,
-            path: path,
-            uid: "",
-            isDir: true,
-            isShare: false,
-            sha: "",
-            size: 0,
-            url: "",
-            type: "",
-            html_url: "",
-            download_url: "",
-            createTime: getNowDate(),
-            updateTime: getNowDate(),
-            child: [],
-          },
-          this.activeTreeNode.path
+            {
+              name: this.rename,
+              path: path,
+              uid: "",
+              isDir: true,
+              isShare: false,
+              sha: "",
+              size: 0,
+              url: "",
+              type: "",
+              html_url: "",
+              download_url: "",
+              createTime: getNowDate(),
+              updateTime: getNowDate(),
+              child: [],
+            },
+            this.activeTreeNode.path
         );
       } else {
         path = `notes/${this.rename}`;
@@ -413,22 +418,22 @@ export default defineComponent({
       };
       this.updateFile(params).then((res) => {
         this.$refs["noteTree"].append(
-          {
-            name: this.rename,
-            path: res.data.path,
-            uid: res.data.uid,
-            isDir: false,
-            isShare: false,
-            sha: res.data.sha,
-            size: res.data.size,
-            url: res.data.url,
-            type: res.data.type,
-            html_url: res.data.html_url,
-            download_url: res.data.download_url,
-            createTime: res.data.createTime,
-            updateTime: res.data.updateTime,
-          },
-          this.activeTreeNode.path
+            {
+              name: this.rename,
+              path: res.data.path,
+              uid: res.data.uid,
+              isDir: false,
+              isShare: false,
+              sha: res.data.sha,
+              size: res.data.size,
+              url: res.data.url,
+              type: res.data.type,
+              html_url: res.data.html_url,
+              download_url: res.data.download_url,
+              createTime: res.data.createTime,
+              updateTime: res.data.updateTime,
+            },
+            this.activeTreeNode.path
         );
 
         this.updateWorkspace().then(() => {
@@ -471,18 +476,18 @@ export default defineComponent({
     handleNodeClick(data) {
       this.activeTreeNode = data;
       if (!data.isDir) {
-        this.activeNote = { ...data };
+        this.activeNote = {...data};
         this.isLoading = true;
         this.getRepoFile(data.uid)
-          .then((res) => {
-            this.isLoading = false;
-            this.activeTreeNode.sha = res.sha;
-            this.vditor.focus();
-            this.vditor.setValue(res.content);
-          })
-          .catch(() => {
-            this.isLoading = false;
-          });
+            .then((res) => {
+              this.isLoading = false;
+              this.activeTreeNode.sha = res.sha;
+              this.vditor.focus();
+              this.vditor.setValue(res.content);
+            })
+            .catch(() => {
+              this.isLoading = false;
+            });
       }
     },
     // 右键菜单
@@ -534,8 +539,7 @@ export default defineComponent({
       };
 
       // 默认文件名为新文件
-      let result = fileArr.filter(
-        (item) =>
+      let result = fileArr.filter((item) =>
           item.name === name && item.isDir === isDir && item.path !== path
       );
       if (!result.length) {
@@ -589,7 +593,7 @@ export default defineComponent({
           uid: "",
         });
         let workspace = JSON.parse(res.data.content);
-        const { notes, trash, share } = workspace;
+        const {notes, trash, share} = workspace;
         this.notes = notes;
         this.trash = trash;
         this.share = share;
@@ -612,23 +616,23 @@ export default defineComponent({
           login: this.userInfo.login,
           uid: uid,
         };
-        const res = await service.get("/repo/file", { params });
+        const res = await service.get("/repo/file", {params});
         resolve(res.data);
       });
     },
     // 更新文件
     updateFile(data) {
       return new Promise(async (resolve) => {
-        const { content, path, sha, uid } = data;
+        const {content, path, sha, uid} = data;
         let response,
-          params = {
-            content: content || " ",
-            login: this.userInfo.login,
-            token: localStorage.token,
-            path,
-            uid,
-            sha,
-          };
+            params = {
+              content: content || " ",
+              login: this.userInfo.login,
+              token: localStorage.token,
+              path,
+              uid,
+              sha,
+            };
         if (sha === "") {
           // 新建文件
           response = await service.post("/repo/file", params);
@@ -644,19 +648,23 @@ export default defineComponent({
     // 删除文件
     deleteFile() {
       return new Promise((resolve) => {
-        const { uid, sha } = this.activeTreeNode;
+        const {uid, sha} = this.activeTreeNode;
         let params = {
           token: localStorage.token,
           login: this.userInfo.login,
           uid,
           sha,
         };
-        service.delete("/repo/file", { params }).then((res) => {
+        service.delete("/repo/file", {params}).then((res) => {
           this.removeTreeNode(this.activeTreeNode, this.notes);
           this.$message.success(res.msg);
           resolve();
         });
       });
+    },
+    //  删除文件夹
+    deleteDir() {
+      this.removeTreeNode(this.activeTreeNode, this.notes);
     },
   },
 });

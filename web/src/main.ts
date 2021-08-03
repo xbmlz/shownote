@@ -12,7 +12,7 @@ import router from './router'
 import service from "./utils/request";
 
 // 设置语言
-locale.use(lang)
+// locale.use(lang)
 
 const app = createApp(App)
 

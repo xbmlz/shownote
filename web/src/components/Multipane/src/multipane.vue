@@ -2,7 +2,7 @@
   <div
     :class="classnames"
     :style="{ cursor, userSelect }"
-    @mousedown.self="onMouseDown"
+    @mousedown="onMouseDown"
   >
     <slot></slot>
   </div>

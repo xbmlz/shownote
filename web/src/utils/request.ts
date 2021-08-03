@@ -1,6 +1,8 @@
+import {useRouter} from "vue-router";
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
-import { message } from 'ant-design-vue';
+import { ElMessage  } from 'element-plus';
 
+const router = useRouter();
 export interface ResponseData {
     code: number;
     data?: any;
@@ -39,12 +41,14 @@ service.interceptors.response.use(
             const data: ResponseData = res.data
             if (data.code === 0) {
                 return data;
-            } else {
-                message.error(data.message);
+            } else if(data.code === 401) {
+                router.push('/login')
+            } else{
+                ElMessage.error(data.message);
                 return Promise.reject(new Error(res.data.message || "Error"));
             }
         } else {
-            message.error("网络错误");
+            ElMessage.error("网络错误");
             return Promise.reject(new Error(res.data.message || "Error"));
         }
     },
