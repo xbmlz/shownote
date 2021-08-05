@@ -1,23 +1,21 @@
 <template>
   <div class="login-modal">
-    <img class="duck" src="@/assets/duck.gif" alt="">
     <div class="login">
       <div class="header">
-        <h2>授权登录</h2>
-        <p>登录后会创建一个名为sn-repo的仓库，用来存储您的笔记文件。</p>
+        <svg-icon icon-class="logo" color="#24292f"></svg-icon>
+        <h2>ShowNote</h2>
       </div>
-      <ul class="content">
-        <li>
-          <el-button @click="auth" type="primary">
-            <img src="@/assets/gitee.png" alt="LOGO">
-            Gitee 登录
-          </el-button>
-        </li>
-      </ul>
+      <div class="content">
+        <p class="title">请选择快捷登录方式</p>
+        <ul>
+          <li v-for="item in list" :key="item.value" @click="login(item.value)">
+            <svg-icon :icon-class="item.icon" :color="item.color"></svg-icon>
+            <span>{{ item.label }}</span>
+          </li>
+        </ul>
+      </div>
     </div>
-    <img class="duck" src="@/assets/duck.gif" alt="">
   </div>
-
 </template>
 
 <script lang="ts">
@@ -26,17 +24,35 @@ import {defineComponent, onMounted} from "vue"
 
 export default defineComponent({
   name: "Login",
-  setup() {
-    console.log(import.meta.env.MODE)
+  data() {
+    return {
+      list: [
+        {
+          icon: 'gitee',
+          color: '#c71d23',
+          label: 'Gitee',
+          value: 'gitee',
+        }
+      ]
+    }
+  },
+  methods: {
     // 申请授权
-    const auth = () => {
-      let clientId = import.meta.env.MODE === "development" ? 'f5763537e579c4f97c56c69b80489a17e250d8186e48efbe3e3fba4c4b6c9558': '919935005b4504c4db77424865a3223a6a7962cab43070e0b5e79f7f4ec7080a'
+    auth() {
+      let clientId = import.meta.env.MODE === "development" ? 'f5763537e579c4f97c56c69b80489a17e250d8186e48efbe3e3fba4c4b6c9558' : '919935005b4504c4db77424865a3223a6a7962cab43070e0b5e79f7f4ec7080a'
       let redirectUri = import.meta.env.MODE === "development" ? 'http://127.0.0.1:8000/user/auth/gitee' : 'https://shownote.cn/api/user/auth/gitee'
       let authUrl = 'https://gitee.com/oauth/authorize?client_id=' + clientId + '&redirect_uri=' + redirectUri + '&response_type=code'
       window.location.href = authUrl
-    }
-    return {
-      auth
+    },
+    login(name) {
+      switch (name) {
+        case 'gitee':
+          this.auth();
+          break
+        case 'github':
+          this.$message.info('暂不支持Github登录');
+          break;
+      }
     }
   }
 })
@@ -53,49 +69,83 @@ export default defineComponent({
   align-items: center;
   justify-content: center;
   user-select: none;
-  background: url("@/assets/login_bg.jpg") no-repeat center center;
+  color: rgb(36, 42, 49);
+  width: 100%;
+  margin: 0px;
+  display: flex;
+  padding: 0px;
+  background: rgb(245, 247, 249);
+  min-height: 100vh;
+  flex-direction: column;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
 
   .login {
-    width: 280px;
-    border: 1px solid #ccc;
-    padding: 50px 30px;
-    box-shadow: 2px 2px 10px 10px #ddd;
+    border: 1px solid #d4dadf;
+    overflow: hidden;
+    width: 400px;
+    background: #fff;
+    border-radius: 4px;
+
 
     .header {
-      h2 {
-        font-size: 28px;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 0;
+      flex-direction: column;
+
+      .svg-icon {
+        font-size: 100px;
       }
 
-      p {
-        padding: 15px 4px 20px;
-        font-size: 16px;
+      h2 {
+        font-size: 24px;
       }
     }
 
-    ul {
+    .content {
+      padding: 24px 0 50px;
+      border-top: 1px solid #d4dadf;
+
+      .title {
+        text-align: center;
+        margin-bottom: 10px;
+      }
+
+      ul {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
       li {
-        list-style-type: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        width: 100px;
+        cursor: pointer;
 
-        ::v-deep(.el-button) {
-          width: 100%;
-
-
-          & > span {
-            display: flex;
-            align-items: center;
-            font-size: 16px;
+        &:hover {
+          .svg-icon, span {
+            opacity: 1;
           }
+        }
 
-          img {
-            position: relative;
-            top: -1px;
-            width: 20px;
-            margin-right: 14px;
-          }
+        .svg-icon {
+          font-size: 60px;
+          margin: 20px 0;
+          opacity: 0.8;
+        }
+
+        span {
+          font-size: 16px;
+          opacity: 0.8;
         }
       }
     }
-
   }
 }
 
