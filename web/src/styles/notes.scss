@@ -51,7 +51,7 @@ $border: #e6e9ed;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     padding: 8px 10px;
     border-bottom: 1px solid $border;
 
@@ -65,6 +65,12 @@ $border: #e6e9ed;
     }
   }
 
+}
+
+.el-tree {
+  .svg-icon {
+    font-size: 16px;
+  }
 }
 
 .catalogue {
@@ -116,6 +122,7 @@ $border: #e6e9ed;
 ::v-deep(.vditor) {
   --border-color: transparent;
   --toolbar-background-color: #fff;
+  --textarea-background-color: #fff;
 
   .vditor-toolbar__item {
     margin: 0 4px;
@@ -151,4 +158,8 @@ $border: #e6e9ed;
     background-color: #edf6ff;
     color: #606266;
   }
+}
+
+.vditor-ir pre.vditor-reset:focus {
+  background-color: #fff;
 }
