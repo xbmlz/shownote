@@ -14,7 +14,7 @@ export interface ResponseData {
 
 // 创建 axios 实例
 let service: AxiosInstance | any;
-localStorage.baseURL = import.meta.env.MODE === "development" ? 'http://10.0.2.199:8000/' : window.location.origin + '/api/'
+localStorage.baseURL = import.meta.env.MODE === "development" ? 'http://127.0.0.1:8000/' : window.location.origin + '/api/'
 service = axios.create({
     baseURL: localStorage.baseURL, // api 的 base_url
     timeout: 50000 // 请求超时时间

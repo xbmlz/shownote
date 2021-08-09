@@ -29,8 +29,23 @@ func UserAuthAction(c *gin.Context) {
 	if err != nil {
 		c.Redirect(http.StatusMovedPermanently, config.AppConfig.WebConfig.ErrorUrl)
 	} else {
-		c.Redirect(http.StatusMovedPermanently, config.AppConfig.WebConfig.IndexUrl+"?token="+token.AccessToken)
+		c.Redirect(http.StatusMovedPermanently, config.AppConfig.WebConfig.IndexUrl+"?token="+token.AccessToken+"&refresh_token="+token.RefreshToken)
 	}
+}
+
+// @Tags 用户
+// @Summary 刷新授权
+// @Description 刷新token
+// @Param	refresh_token	query	string	true	"refresh_token"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"创建成功"}"
+// @Router /user/auth/refresh [get]
+func UserAuthRefreshAction(c *gin.Context) {
+	refreshToken := c.Query("refresh_token")
+	token, err := service.RefreshToken(refreshToken)
+	if err != nil {
+		response.FailWithMessage("刷新token失败", c)
+	}
+	response.OkWithData(token, c)
 }
 
 // @Tags 用户
@@ -43,6 +58,7 @@ func UserInfoAction(c *gin.Context) {
 	token := c.Query("token")
 	if token == "" {
 		response.FailWithMessage("接口未授权", c)
+		return
 	}
 	client := resty.New()
 	resp, err := client.R().
@@ -51,6 +67,11 @@ func UserInfoAction(c *gin.Context) {
 
 	if err != nil {
 		response.FailWithMessage("获取用户信息失败", c)
+		return
+	}
+	if resp.RawResponse.StatusCode == 401 {
+		response.FailWithUnauth(c)
+		return
 	}
 	var userInfo model.User
 	json.Unmarshal(resp.Body(), &userInfo)

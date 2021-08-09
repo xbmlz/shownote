@@ -15,6 +15,7 @@ type Response struct {
 const (
 	ERROR   = 7
 	SUCCESS = 0
+	UNAUTH  = 401
 )
 
 func Result(code int, data interface{}, msg string, c *gin.Context) {
@@ -52,4 +53,8 @@ func FailWithMessage(message string, c *gin.Context) {
 
 func FailWithDetailed(data interface{}, message string, c *gin.Context) {
 	Result(ERROR, data, message, c)
+}
+
+func FailWithUnauth(c *gin.Context) {
+	Result(UNAUTH, "", "接口未授权", c)
 }

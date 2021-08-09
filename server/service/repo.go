@@ -19,7 +19,14 @@ func ExistRepo(token string) (bool, error) {
 		SetQueryParam("q", global.REPO_NAME).
 		Get("https://gitee.com/api/v5/user/repos")
 	if err != nil {
-		return false, err
+		return false, errors.New("network error")
+	}
+	jsonObj, err := simplejson.NewJson([]byte(resp.Body()))
+	if err != nil {
+		return false, errors.New("json parse error")
+	}
+	if resp.RawResponse.StatusCode == 401 {
+		return false, errors.New(jsonObj.Get("message").MustString())
 	}
 	var repoArr []interface{}
 	json.Unmarshal(resp.Body(), &repoArr)
@@ -32,12 +39,19 @@ func ExistRepo(token string) (bool, error) {
 
 func CreateRepo(token, name string) error {
 	client := resty.New()
-	_, err := client.R().
+	resp, err := client.R().
 		SetHeader("Content-Type", "application/json").
 		SetBody(fmt.Sprintf(`{"access_token":"%s", "name":"%s", "auto_init":true}`, token, name)).
 		Post("https://gitee.com/api/v5/user/repos")
 	if err != nil {
 		return err
+	}
+	jsonObj, err := simplejson.NewJson([]byte(resp.Body()))
+	if err != nil {
+		return err
+	}
+	if resp.RawResponse.StatusCode == 401 {
+		return errors.New(jsonObj.Get("message").MustString())
 	}
 	return nil
 }
@@ -61,6 +75,9 @@ func CreateFile(token, login, path, content string) (response.FileInfo, error) {
 		return info, err
 	}
 	if resp.RawResponse.StatusCode > 201 {
+		if resp.RawResponse.StatusCode == 401 {
+			return info, errors.New(jsonObj.Get("message").MustString())
+		}
 		return info, errors.New(jsonObj.Get("message").MustString())
 	}
 	decStr, err := base64.StdEncoding.DecodeString(jsonObj.Get("content").MustString())
@@ -100,6 +117,9 @@ func UpdateFile(token, login, path, content, sha string) (response.FileInfo, err
 		return info, err
 	}
 	if resp.RawResponse.StatusCode > 201 {
+		if resp.RawResponse.StatusCode == 401 {
+			return info, errors.New(jsonObj.Get("message").MustString())
+		}
 		return info, errors.New(jsonObj.Get("message").MustString())
 	}
 	decStr, err := base64.StdEncoding.DecodeString(jsonObj.Get("content").MustString())
@@ -136,6 +156,9 @@ func GetContent(token, login, path string) (response.FileInfo, error) {
 		return info, err
 	}
 	if resp.RawResponse.StatusCode > 201 {
+		if resp.RawResponse.StatusCode == 401 {
+			return info, errors.New(jsonObj.Get("message").MustString())
+		}
 		return info, errors.New(jsonObj.Get("message").MustString())
 	}
 	decStr, err := base64.StdEncoding.DecodeString(jsonObj.Get("content").MustString())
@@ -173,6 +196,9 @@ func DeleteFile(token, login, path, sha string) (response.FileInfo, error) {
 		return info, err
 	}
 	if resp.RawResponse.StatusCode > 201 {
+		if resp.RawResponse.StatusCode == 401 {
+			return info, errors.New(jsonObj.Get("message").MustString())
+		}
 		return info, errors.New(jsonObj.Get("message").MustString())
 	}
 	decStr, err := base64.StdEncoding.DecodeString(jsonObj.Get("content").MustString())

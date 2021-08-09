@@ -39,6 +39,10 @@ func GetRepoInfoAction(c *gin.Context) {
 	// 1.1 返回workspace.json
 	isExist, err = service.ExistRepo(token)
 	if err != nil {
+		if err.Error() == "401 Unauthorized: Access token is expired" {
+			response.FailWithUnauth(c)
+			return
+		}
 		response.FailWithMessage("获取仓库配置失败", c)
 		return
 	}
@@ -86,6 +90,10 @@ func GetWorkspaceAction(c *gin.Context) {
 	)
 	fileInfo, err = service.GetContent(token, login, global.WORKSPACE_PATH)
 	if err != nil {
+		if err.Error() == "401 Unauthorized: Access token is expired" {
+			response.FailWithUnauth(c)
+			return
+		}
 		response.FailWithMessage("仓库信息获取失败, "+err.Error(), c)
 		return
 	}
@@ -110,6 +118,10 @@ func UpdateWorkspaceAction(c *gin.Context) {
 		return
 	}
 	if fileInfo, err = service.UpdateFile(reqFileInfo.Token, reqFileInfo.Login, global.WORKSPACE_PATH, reqFileInfo.Content, reqFileInfo.Sha); err != nil {
+		if err.Error() == "401 Unauthorized: Access token is expired" {
+			response.FailWithUnauth(c)
+			return
+		}
 		response.FailWithMessage("更新工作空间失败, "+err.Error(), c)
 		return
 	}
@@ -139,6 +151,10 @@ func GetFileAction(c *gin.Context) {
 	}
 	fileInfo, err = service.GetContent(token, login, "notes/"+uid+".md")
 	if err != nil {
+		if err.Error() == "401 Unauthorized: Access token is expired" {
+			response.FailWithUnauth(c)
+			return
+		}
 		response.FailWithMessage("获取文件内容失败, "+err.Error(), c)
 		return
 	}
@@ -167,6 +183,10 @@ func CreateFileAction(c *gin.Context) {
 	uid := strings.ReplaceAll(uuid.NewV4().String(), "-", "")
 	reqFileInfo.Content = base64.StdEncoding.EncodeToString([]byte(reqFileInfo.Content))
 	if fileInfo, err = service.CreateFile(reqFileInfo.Token, reqFileInfo.Login, "notes/"+uid+".md", reqFileInfo.Content); err != nil {
+		if err.Error() == "401 Unauthorized: Access token is expired" {
+			response.FailWithUnauth(c)
+			return
+		}
 		response.FailWithMessage("创建文件失败, "+err.Error(), c)
 		return
 	}
@@ -206,6 +226,10 @@ func UploadFileAction(c *gin.Context) {
 	}
 	fileName := "assets/" + fileType + "/" + uid + fileSuffix
 	if fileInfo, err = service.CreateFile(token, login, fileName, content); err != nil {
+		if err.Error() == "401 Unauthorized: Access token is expired" {
+			response.FailWithUnauth(c)
+			return
+		}
 		response.FailWithMessage("创建文件失败, "+err.Error(), c)
 		return
 	}
@@ -240,6 +264,10 @@ func UpdateFileAction(c *gin.Context) {
 	}
 	// encodeStr := base64.StdEncoding.EncodeToString([]byte(content))
 	if fileInfo, err = service.UpdateFile(reqFileInfo.Token, reqFileInfo.Login, "notes/"+reqFileInfo.Uid+".md", reqFileInfo.Content, reqFileInfo.Sha); err != nil {
+		if err.Error() == "401 Unauthorized: Access token is expired" {
+			response.FailWithUnauth(c)
+			return
+		}
 		response.FailWithMessage("更新文件失败, "+err.Error(), c)
 		return
 	}
@@ -271,6 +299,10 @@ func DeleteFileAction(c *gin.Context) {
 	}
 	fileInfo, err = service.DeleteFile(token, login, "notes/"+uid+".md", sha)
 	if err != nil {
+		if err.Error() == "401 Unauthorized: Access token is expired" {
+			response.FailWithUnauth(c)
+			return
+		}
 		response.FailWithMessage("删除文件失败, "+err.Error(), c)
 		return
 	}
