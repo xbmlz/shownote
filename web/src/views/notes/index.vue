@@ -14,12 +14,13 @@
           ></el-avatar>
           <h2>{{ userInfo.name }}</h2>
         </div>
-        <el-button v-if="false"
-                   type="primary"
-                   @click="createDir"
-                   size="mini"
-                   icon="el-icon-plus"
-                   circle
+        <el-button
+          v-if="false"
+          type="primary"
+          @click="createDir"
+          size="mini"
+          icon="el-icon-plus"
+          circle
         ></el-button>
       </div>
       <el-tree
@@ -39,14 +40,14 @@
           <div>
             <svg-icon icon-class="folder" v-if="data.isDir"></svg-icon>
             <svg-icon icon-class="markdown" v-else></svg-icon>
-            <span style="margin-left: 4px;">{{ data.name }}</span>
+            <span style="margin-left: 4px">{{ data.name }}</span>
           </div>
         </template>
       </el-tree>
     </div>
     <multipane-resizer></multipane-resizer>
     <div class="pane doc" :style="{ flexGrow: 1 }">
-      <div v-show="activeNote.name" v-loading="isLoading" style="width: 80%">
+      <div v-show="activeNote.name" v-loading="isLoading">
         <div class="doc-title">
           <el-input v-model="activeNote.name" readonly size="mini"></el-input>
           <el-button
@@ -110,9 +111,9 @@
         删除
       </li>
       <li
-          class="menu-item"
-          @click="deleteFile"
-          v-if="activeTreeNode.isDir === false"
+        class="menu-item"
+        @click="deleteFile"
+        v-if="activeTreeNode.isDir === false"
       >
         删除
       </li>
@@ -139,6 +140,7 @@ export default defineComponent({
       token: "",
       // 编辑器实例
       vditor: null,
+      isMobile: window.innerWidth <= 960,
       // 用户信息
       userInfo: {},
       //  当前选中节点信息
@@ -203,11 +205,19 @@ export default defineComponent({
     // 初始化编辑器
     initVditor() {
       this.vditor = new Vditor("vditor", {
-        height: "100%",
+        width: this.isMobile ? "100%" : "80%",
+        height: "0",
         mode: "wysiwyg",
-        toolbarConfig: {
-          pin: true,
-          hide: this.isHideToolbar,
+        tab: "\t",
+        counter: "999999",
+        typewriterMode: true,
+        preview: {
+          delay: 100,
+          show: !this.isMobile,
+        },
+        outline: {
+          enable: true,
+          position: "right",
         },
         upload: {
           url: localStorage.baseURL + "/repo/upload",
@@ -502,8 +512,20 @@ export default defineComponent({
           .then((res) => {
             this.isLoading = false;
             this.activeTreeNode.sha = res.sha;
-            this.vditor.focus();
+            // this.vditor.focus();
             this.vditor.setValue(res.content);
+            console.log(this.vditor);
+            // 全屏预览
+            this.vditor.vditor.toolbar.element.style.display = "none";
+            this.vditor.vditor.preview.element.style.display = "block";
+            if (this.vditor.vditor.currentMode === "sv") {
+              this.vditor.vditor.sv.element.style.display = "none";
+            } else {
+              this.vditor.vditor[
+                this.vditor.vditor.currentMode
+              ].element.parentElement.style.display = "none";
+            }
+            this.vditor.vditor.preview.render(this.vditor.vditor);
           })
           .catch(() => {
             this.isLoading = false;
@@ -668,35 +690,37 @@ export default defineComponent({
     },
     // 删除文件
     deleteFile() {
-      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        const {uid, sha} = this.activeTreeNode;
-        let params = {
-          token: localStorage.token,
-          login: this.userInfo.login,
-          uid,
-          sha,
-        };
-        service.delete("/repo/file", { params }).then((res) => {
-          this.removeTreeNode(this.activeTreeNode, this.notes);
-          this.$message.success(res.msg);
-        });
-      }).catch(() => {
-      });
+      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          const { uid, sha } = this.activeTreeNode;
+          let params = {
+            token: localStorage.token,
+            login: this.userInfo.login,
+            uid,
+            sha,
+          };
+          service.delete("/repo/file", { params }).then((res) => {
+            this.removeTreeNode(this.activeTreeNode, this.notes);
+            this.$message.success(res.msg);
+          });
+        })
+        .catch(() => {});
     },
     //  删除文件夹
     deleteDir() {
-      this.$confirm('此操作将永久删除该文件夹, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.removeTreeNode(this.activeTreeNode, this.notes);
-      }).catch(() => {
-      });
+      this.$confirm("此操作将永久删除该文件夹, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          this.removeTreeNode(this.activeTreeNode, this.notes);
+        })
+        .catch(() => {});
     },
   },
 });
