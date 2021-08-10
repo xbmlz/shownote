@@ -11,15 +11,15 @@ func InitRouter() *gin.Engine {
 	router := gin.Default()
 	router.Use(middleware.Cors())
 	router.GET("/", api.LoginAction)
+	router.GET("/auth/:repo", api.UserAuthAction)
+	router.GET("/auth/refresh", api.UserAuthRefreshAction)
 
-	user := router.Group("user")
+	user := router.Group("user", middleware.JwtAuth())
 	{
-		user.GET("/auth/:repo", api.UserAuthAction)
-		user.GET("/auth/refresh", api.UserAuthRefreshAction)
 		user.GET("/info", api.UserInfoAction)
 	}
 
-	repo := router.Group("repo")
+	repo := router.Group("repo", middleware.JwtAuth())
 	{
 		repo.GET("/info", api.GetRepoInfoAction)
 		repo.GET("/workspace", api.GetWorkspaceAction)

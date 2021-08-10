@@ -119,15 +119,15 @@ $border: #e6e9ed;
   height: calc(100vh - 80px);
 }
 
-::v-deep(.vditor) {
-  --border-color: transparent;
-  --toolbar-background-color: #fff;
-  --textarea-background-color: #fff;
+// ::v-deep(.vditor) {
+//   --border-color: transparent;
+//   --toolbar-background-color: #fff;
+//   --textarea-background-color: #fff;
 
-  .vditor-toolbar__item {
-    margin: 0 4px;
-  }
-}
+//   .vditor-toolbar__item {
+//     margin: 0 4px;
+//   }
+// }
 
 .menu-modal {
   position: fixed;

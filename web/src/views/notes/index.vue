@@ -46,7 +46,7 @@
     </div>
     <multipane-resizer></multipane-resizer>
     <div class="pane doc" :style="{ flexGrow: 1 }">
-      <div v-show="activeNote.name" v-loading="isLoading" style="width: 100%">
+      <div v-show="activeNote.name" v-loading="isLoading" style="width: 80%">
         <div class="doc-title">
           <el-input v-model="activeNote.name" readonly size="mini"></el-input>
           <el-button
@@ -204,10 +204,7 @@ export default defineComponent({
     initVditor() {
       this.vditor = new Vditor("vditor", {
         height: "100%",
-        // mode: "sv",
-        preview: {
-          mode: ""
-        },
+        mode: "wysiwyg",
         toolbarConfig: {
           pin: true,
           hide: this.isHideToolbar,

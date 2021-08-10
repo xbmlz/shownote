@@ -5,6 +5,8 @@ go 1.15
 require (
 	github.com/88250/lute v1.7.3
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
+	github.com/allegro/bigcache v1.2.1
+	github.com/allegro/bigcache/v3 v3.0.0 // indirect
 	github.com/bitly/go-simplejson v0.5.0
 	github.com/cpuguy83/go-md2man/v2 v2.0.1 // indirect
 	github.com/gin-gonic/gin v1.7.2
@@ -13,6 +15,7 @@ require (
 	github.com/go-openapi/swag v0.19.15 // indirect
 	github.com/go-playground/validator/v10 v10.6.1 // indirect
 	github.com/go-resty/resty/v2 v2.6.0
+	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20210707094841-eea289f08d45 // indirect
 	github.com/json-iterator/go v1.1.11 // indirect

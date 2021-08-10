@@ -23,6 +23,9 @@ service = axios.create({
 // request 拦截器 axios 的一些配置
 service.interceptors.request.use(
     (config: AxiosRequestConfig) => {
+        if (localStorage.token) {
+            config.headers['Authorization'] = localStorage.token
+        }
         return config;
     },
     (error: any) => {

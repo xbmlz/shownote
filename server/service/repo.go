@@ -25,7 +25,7 @@ func ExistRepo(token string) (bool, error) {
 	if err != nil {
 		return false, errors.New("json parse error")
 	}
-	if resp.RawResponse.StatusCode == 401 {
+	if resp.RawResponse.StatusCode > 201 {
 		return false, errors.New(jsonObj.Get("message").MustString())
 	}
 	var repoArr []interface{}
@@ -50,7 +50,7 @@ func CreateRepo(token, name string) error {
 	if err != nil {
 		return err
 	}
-	if resp.RawResponse.StatusCode == 401 {
+	if resp.RawResponse.StatusCode > 201 {
 		return errors.New(jsonObj.Get("message").MustString())
 	}
 	return nil
@@ -75,9 +75,6 @@ func CreateFile(token, login, path, content string) (response.FileInfo, error) {
 		return info, err
 	}
 	if resp.RawResponse.StatusCode > 201 {
-		if resp.RawResponse.StatusCode == 401 {
-			return info, errors.New(jsonObj.Get("message").MustString())
-		}
 		return info, errors.New(jsonObj.Get("message").MustString())
 	}
 	decStr, err := base64.StdEncoding.DecodeString(jsonObj.Get("content").MustString())
@@ -117,9 +114,6 @@ func UpdateFile(token, login, path, content, sha string) (response.FileInfo, err
 		return info, err
 	}
 	if resp.RawResponse.StatusCode > 201 {
-		if resp.RawResponse.StatusCode == 401 {
-			return info, errors.New(jsonObj.Get("message").MustString())
-		}
 		return info, errors.New(jsonObj.Get("message").MustString())
 	}
 	decStr, err := base64.StdEncoding.DecodeString(jsonObj.Get("content").MustString())
@@ -156,9 +150,6 @@ func GetContent(token, login, path string) (response.FileInfo, error) {
 		return info, err
 	}
 	if resp.RawResponse.StatusCode > 201 {
-		if resp.RawResponse.StatusCode == 401 {
-			return info, errors.New(jsonObj.Get("message").MustString())
-		}
 		return info, errors.New(jsonObj.Get("message").MustString())
 	}
 	decStr, err := base64.StdEncoding.DecodeString(jsonObj.Get("content").MustString())
@@ -196,9 +187,6 @@ func DeleteFile(token, login, path, sha string) (response.FileInfo, error) {
 		return info, err
 	}
 	if resp.RawResponse.StatusCode > 201 {
-		if resp.RawResponse.StatusCode == 401 {
-			return info, errors.New(jsonObj.Get("message").MustString())
-		}
 		return info, errors.New(jsonObj.Get("message").MustString())
 	}
 	decStr, err := base64.StdEncoding.DecodeString(jsonObj.Get("content").MustString())
