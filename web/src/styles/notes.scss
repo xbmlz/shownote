@@ -14,8 +14,8 @@ $border: #e6e9ed;
   background: $bg;
 
   &.menu {
-    width: 270px;
-    min-width: 250px;
+    width: 350px;
+    min-width: 350px;
     max-width: 30%;
     -moz-user-select: none; /*火狐*/
     -webkit-user-select: none; /*webkit浏览器*/
@@ -91,15 +91,19 @@ $border: #e6e9ed;
 
 .doc {
   flex: 1;
-  padding: 10px;
+  //padding: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
+  &>div {
+    //max-width: 860px;
+    width: 98%;
+  }
 
   &-title {
     display: flex;
     margin-bottom: 10px;
-    padding-left: 26px;
+    padding-right: 100px;
 
     .el-input {
       font-size: 20px;
@@ -116,18 +120,35 @@ $border: #e6e9ed;
 }
 
 #vditor {
-  height: calc(100vh - 80px);
+  height: calc(100vh - 66px);
 }
 
-// ::v-deep(.vditor) {
-//   --border-color: transparent;
-//   --toolbar-background-color: #fff;
-//   --textarea-background-color: #fff;
+ ::v-deep(.vditor) {
+   //--border-color: #e6e9ed;
+   --border-color: transparent;
+   --toolbar-background-color: #fff;
+   --textarea-background-color: #fff;
 
-//   .vditor-toolbar__item {
-//     margin: 0 4px;
-//   }
-// }
+   //.vditor-toolbar__item {
+   //  margin: 0 4px;
+   //}
+   ::-webkit-scrollbar {
+     width: 10px;
+     height: 10px;
+   }
+
+   ::-webkit-scrollbar-thumb {
+     background-color: #bcbcbc;
+     height: 50px;
+     outline-offset: -2px;
+     outline: 1px solid transparent;
+   }
+
+   ::-webkit-scrollbar-track-piece {
+     background-color: transparent;
+     -webkit-border-radius: 0;
+   }
+ }
 
 .menu-modal {
   position: fixed;

@@ -8,16 +8,6 @@ body {
     transition: none !important;
   }
 
-  .el-button,
-  .el-input__inner,
-  .el-avatar,
-  .vditor {
-    border-radius: 0 !important;
-  }
-  .el-button.is-circle {
-    border-radius: 50% !important;
-  }
-
   .el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content {
     background-color: #ccefff;
 

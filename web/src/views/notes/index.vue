@@ -50,11 +50,19 @@
       <div v-show="activeNote.name" v-loading="isLoading">
         <div class="doc-title">
           <el-input v-model="activeNote.name" readonly size="mini"></el-input>
-          <el-button
-            @click="updateNote"
+          <el-button v-if="disabled"
+            @click="toggleEdit(false)"
             :loading="saveLoading"
             size="mini"
             type="primary"
+            icon="el-icon-edit"
+          >
+            编辑
+          </el-button>
+          <el-button v-else
+            @click="updateNote"
+            :loading="saveLoading"
+            size="mini"
             icon="el-icon-s-promotion"
           >
             保存
@@ -139,6 +147,7 @@ export default defineComponent({
     return {
       token: "",
       // 编辑器实例
+      disabled: true,
       vditor: null,
       isMobile: window.innerWidth <= 960,
       // 用户信息
@@ -205,7 +214,6 @@ export default defineComponent({
     // 初始化编辑器
     initVditor() {
       this.vditor = new Vditor("vditor", {
-        width: this.isMobile ? "100%" : "80%",
         height: "0",
         mode: "wysiwyg",
         tab: "\t",
@@ -214,6 +222,7 @@ export default defineComponent({
         preview: {
           delay: 100,
           show: !this.isMobile,
+          maxWidth:'100%'
         },
         outline: {
           enable: true,
@@ -290,6 +299,7 @@ export default defineComponent({
     },
     //  更新文件及目录结构
     updateNote() {
+      if(this.disabled) return false;
       if (!this.activeNote.name) {
         return this.$message.error("文件名称不能为空");
       }
@@ -301,6 +311,7 @@ export default defineComponent({
       this.saveLoading = true;
       this.updateFile(params)
         .then((res) => {
+          this.toggleEdit(true)
           this.$message.success(res.msg);
           this.saveLoading = false;
           this.activeNote = {
@@ -512,25 +523,26 @@ export default defineComponent({
           .then((res) => {
             this.isLoading = false;
             this.activeTreeNode.sha = res.sha;
-            // this.vditor.focus();
-            this.vditor.setValue(res.content);
-            console.log(this.vditor);
-            // 全屏预览
-            this.vditor.vditor.toolbar.element.style.display = "none";
-            this.vditor.vditor.preview.element.style.display = "block";
-            if (this.vditor.vditor.currentMode === "sv") {
-              this.vditor.vditor.sv.element.style.display = "none";
-            } else {
-              this.vditor.vditor[
-                this.vditor.vditor.currentMode
-              ].element.parentElement.style.display = "none";
-            }
-            this.vditor.vditor.preview.render(this.vditor.vditor);
+            this.vditor.focus();
+            this.vditor.setValue(res.content, true);
+            this.toggleEdit(true)
           })
           .catch(() => {
             this.isLoading = false;
           });
       }
+    },
+    // 切换编辑模式
+    toggleEdit(flag) {
+      this.disabled = flag;
+      this.vditor.vditor.toolbar.element.style.display = flag?'none':"block";
+      this.vditor.vditor.preview.element.style.display = flag?'block':"none";
+      if (this.vditor.vditor.currentMode === "sv") {
+        this.vditor.vditor.sv.element.style.display = flag?'none':"block";
+      } else {
+        this.vditor.vditor[this.vditor.vditor.currentMode].element.parentElement.style.display = flag?'none':"block";
+      }
+      this.vditor.vditor.preview.render(this.vditor.vditor);
     },
     // 右键菜单
     rightClick(event, data) {

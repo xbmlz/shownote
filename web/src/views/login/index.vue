@@ -40,7 +40,7 @@ export default defineComponent({
     // 申请授权
     auth() {
       let clientId = import.meta.env.MODE === "development" ? 'f5763537e579c4f97c56c69b80489a17e250d8186e48efbe3e3fba4c4b6c9558' : '919935005b4504c4db77424865a3223a6a7962cab43070e0b5e79f7f4ec7080a'
-      let redirectUri = import.meta.env.MODE === "development" ? 'http://127.0.0.1:8000/user/auth/gitee' : 'https://shownote.cn/api/user/auth/gitee'
+      let redirectUri = import.meta.env.MODE === "development" ? 'http://127.0.0.1:8000/auth/gitee' : 'https://shownote.cn/api/auth/gitee'
       let authUrl = 'https://gitee.com/oauth/authorize?client_id=' + clientId + '&redirect_uri=' + redirectUri + '&response_type=code'
       window.location.href = authUrl
     },

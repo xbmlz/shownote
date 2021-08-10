@@ -44,7 +44,7 @@ service.interceptors.response.use(
             const data: ResponseData = res.data
             if (data.code === 0) {
                 return data;
-            } else if(data.code === 401) {
+            } else if(data.code === 4010 || data.code === 4011 || data.code === 4012) {
                 router.push('/login')
             } else{
                 ElMessage.error(data.message);
