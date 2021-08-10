@@ -57,7 +57,7 @@
             type="primary"
             icon="el-icon-edit"
           >
-            编辑
+            编辑 (E)
           </el-button>
           <el-button v-else
             @click="updateNote"
@@ -65,7 +65,7 @@
             size="mini"
             icon="el-icon-s-promotion"
           >
-            保存
+            保存 (Ctrl+S)
           </el-button>
         </div>
         <div id="vditor"></div>
@@ -208,6 +208,10 @@ export default defineComponent({
       // ctrl+s 保存
       if ((e.ctrlKey || e.metaKey) && e.key === "s") {
         this.updateNote();
+        e.preventDefault();
+      }
+      if (e.key === "e") {
+        this.toggleEdit(false);
         e.preventDefault();
       }
     },
@@ -543,6 +547,9 @@ export default defineComponent({
         this.vditor.vditor[this.vditor.vditor.currentMode].element.parentElement.style.display = flag?'none':"block";
       }
       this.vditor.vditor.preview.render(this.vditor.vditor);
+      if(!this.disabled) {
+        this.vditor.focus()
+      }
     },
     // 右键菜单
     rightClick(event, data) {
