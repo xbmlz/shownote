@@ -1,4 +1,5 @@
 $bg: #fff;
+$leftBg: #fafafa;
 $border: #e6e9ed;
 
 
@@ -17,11 +18,9 @@ $border: #e6e9ed;
     width: 350px;
     min-width: 350px;
     max-width: 30%;
-    -moz-user-select: none; /*火狐*/
-    -webkit-user-select: none; /*webkit浏览器*/
-    -ms-user-select: none; /*IE10*/
     user-select: none; /*选中文字时避免出现蓝色背景*/
-
+    background-color: $leftBg;
+    border-right: 1px solid $border;
   }
 
   &.catalogue {
@@ -45,8 +44,6 @@ $border: #e6e9ed;
 }
 
 .menu {
-  border-right: 1px solid $border;
-
   .avatar {
     display: flex;
     justify-content: space-between;
@@ -68,6 +65,8 @@ $border: #e6e9ed;
 }
 
 .el-tree {
+  background-color: inherit;
+
   .svg-icon {
     font-size: 16px;
   }
@@ -95,7 +94,8 @@ $border: #e6e9ed;
   display: flex;
   align-items: center;
   justify-content: center;
-  &>div {
+
+  & > div {
     //max-width: 860px;
     width: 98%;
   }
@@ -123,32 +123,32 @@ $border: #e6e9ed;
   height: calc(100vh - 66px);
 }
 
- ::v-deep(.vditor) {
-   //--border-color: #e6e9ed;
-   --border-color: transparent;
-   --toolbar-background-color: #fff;
-   --textarea-background-color: #fff;
+::v-deep(.vditor) {
+  //--border-color: #e6e9ed;
+  --border-color: transparent;
+  --toolbar-background-color: #fff;
+  --textarea-background-color: #fff;
 
-   //.vditor-toolbar__item {
-   //  margin: 0 4px;
-   //}
-   ::-webkit-scrollbar {
-     width: 10px;
-     height: 10px;
-   }
+  //.vditor-toolbar__item {
+  //  margin: 0 4px;
+  //}
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
 
-   ::-webkit-scrollbar-thumb {
-     background-color: #bcbcbc;
-     height: 50px;
-     outline-offset: -2px;
-     outline: 1px solid transparent;
-   }
+  ::-webkit-scrollbar-thumb {
+    background-color: #bcbcbc;
+    height: 50px;
+    outline-offset: -2px;
+    outline: 1px solid transparent;
+  }
 
-   ::-webkit-scrollbar-track-piece {
-     background-color: transparent;
-     -webkit-border-radius: 0;
-   }
- }
+  ::-webkit-scrollbar-track-piece {
+    background-color: transparent;
+    -webkit-border-radius: 0;
+  }
+}
 
 .menu-modal {
   position: fixed;
