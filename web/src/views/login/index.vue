@@ -45,6 +45,7 @@ export default defineComponent({
       window.location.href = authUrl
     },
     login(name) {
+      localStorage.loginType = name;
       switch (name) {
         case 'gitee':
           this.auth();

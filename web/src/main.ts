@@ -1,5 +1,19 @@
 import {createApp} from 'vue'
-import {ElButton, ElInput, ElSelect, ElAvatar, ElEmpty, ElTree, ElDialog, ElMessage , ElLoading, ElMessageBox } from 'element-plus';
+import {
+    ElButton,
+    ElInput,
+    ElSelect,
+    ElAvatar,
+    ElEmpty,
+    ElTree,
+    ElDialog,
+    ElMessage,
+    ElLoading,
+    ElMessageBox,
+    ElDropdown,
+    ElDropdownItem,
+    ElDropdownMenu,
+} from 'element-plus';
 import 'element-plus/packages/theme-chalk/src/base.scss';
 import lang from 'element-plus/lib/locale/lang/zh-cn'
 import 'dayjs/locale/zh-cn'
@@ -34,5 +48,8 @@ app.use(ElDialog)
 app.use(ElMessage)
 app.use(ElLoading)
 app.use(ElMessageBox)
+app.use(ElDropdown)
+app.use(ElDropdownMenu)
+app.use(ElDropdownItem)
 app.use(router)
 app.mount('#app')

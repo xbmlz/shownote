@@ -22,6 +22,17 @@
             icon="el-icon-plus"
             circle
         ></el-button>
+        <el-dropdown trigger="click" @command="handleCommand">
+          <span class="el-dropdown-link">
+            <i class="el-icon-more"></i>
+          </span>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item command="logout">注销账号</el-dropdown-item>
+              <el-dropdown-item command="issues">问题反馈</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
       </div>
       <el-tree
           ref="noteTree"
@@ -140,6 +151,7 @@ export default defineComponent({
   },
   data() {
     return {
+      router:null,
       token: "",
       // 编辑器实例
       disabled: true,
@@ -172,7 +184,7 @@ export default defineComponent({
     };
   },
   mounted() {
-    const router = useRouter();
+    this.router = useRouter();
     const route = useRoute();
     this.token = route.query.token || "";
     if (this.token) {
@@ -180,7 +192,7 @@ export default defineComponent({
       localStorage.token = this.token;
     }
     if (!localStorage.token) {
-      router.push("/login");
+      this.router.push("/login");
     } else {
       this.token = localStorage.token;
       this.init();
@@ -745,6 +757,15 @@ export default defineComponent({
           .catch(() => {
           });
     },
+    handleCommand(command) {
+      if (command === 'logout') {
+        localStorage.removeItem('token');
+        this.router.push('/login')
+      } else if (command === 'issues') {
+        let type = localStorage.loginType === 'gitee' ? 'gitee' : 'github'
+        window.open(`https://${type}.com/viodo/shownote/issues/new`, `${type}`)
+      }
+    }
   },
 });
 </script>
