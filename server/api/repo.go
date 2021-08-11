@@ -100,6 +100,7 @@ func GetWorkspaceAction(c *gin.Context) {
 // @Success 200 object response.FileInfo "成功后返回值"
 // @Router /repo/workspace [put]
 func UpdateWorkspaceAction(c *gin.Context) {
+	token := c.GetString("token")
 	var (
 		reqFileInfo request.FileInfo
 		err         error
@@ -109,7 +110,7 @@ func UpdateWorkspaceAction(c *gin.Context) {
 		response.FailWithMessage("参数解析失败", c)
 		return
 	}
-	if fileInfo, err = service.UpdateFile(reqFileInfo.Token, reqFileInfo.Login, global.WORKSPACE_PATH, reqFileInfo.Content, reqFileInfo.Sha); err != nil {
+	if fileInfo, err = service.UpdateFile(token, reqFileInfo.Login, global.WORKSPACE_PATH, reqFileInfo.Content, reqFileInfo.Sha); err != nil {
 		response.FailWithMessage("更新工作空间失败, "+err.Error(), c)
 		return
 	}
@@ -155,6 +156,7 @@ func GetFileAction(c *gin.Context) {
 // @Success 200 object response.FileInfo "成功后返回值"
 // @Router /repo/file [post]
 func CreateFileAction(c *gin.Context) {
+	token := c.GetString("token")
 	var (
 		reqFileInfo request.FileInfo
 		err         error
@@ -166,7 +168,7 @@ func CreateFileAction(c *gin.Context) {
 	}
 	uid := strings.ReplaceAll(uuid.NewV4().String(), "-", "")
 	reqFileInfo.Content = base64.StdEncoding.EncodeToString([]byte(reqFileInfo.Content))
-	if fileInfo, err = service.CreateFile(reqFileInfo.Token, reqFileInfo.Login, "notes/"+uid+".md", reqFileInfo.Content); err != nil {
+	if fileInfo, err = service.CreateFile(token, reqFileInfo.Login, "notes/"+uid+".md", reqFileInfo.Content); err != nil {
 		response.FailWithMessage("创建文件失败, "+err.Error(), c)
 		return
 	}
@@ -182,12 +184,13 @@ func CreateFileAction(c *gin.Context) {
 // @Success 200 object response.FileInfo "成功后返回值"
 // @Router /repo/upload [post]
 func UploadFileAction(c *gin.Context) {
+	token := c.GetString("token")
 	var (
 		fileType string
 		err      error
 		fileInfo response.FileInfo
 	)
-	token := c.PostForm("token")
+	// token := c.PostForm("token")
 	login := c.PostForm("login")
 	fileContent, _ := c.FormFile("file")
 	o, _ := fileContent.Open()
@@ -229,6 +232,7 @@ func UploadFileAction(c *gin.Context) {
 // @Success 200 object response.FileInfo "成功后返回值"
 // @Router /repo/file [put]
 func UpdateFileAction(c *gin.Context) {
+	token := c.GetString("token")
 	var (
 		reqFileInfo request.FileInfo
 		err         error
@@ -239,7 +243,7 @@ func UpdateFileAction(c *gin.Context) {
 		return
 	}
 	// encodeStr := base64.StdEncoding.EncodeToString([]byte(content))
-	if fileInfo, err = service.UpdateFile(reqFileInfo.Token, reqFileInfo.Login, "notes/"+reqFileInfo.Uid+".md", reqFileInfo.Content, reqFileInfo.Sha); err != nil {
+	if fileInfo, err = service.UpdateFile(token, reqFileInfo.Login, "notes/"+reqFileInfo.Uid+".md", reqFileInfo.Content, reqFileInfo.Sha); err != nil {
 		response.FailWithMessage("更新文件失败, "+err.Error(), c)
 		return
 	}
@@ -257,7 +261,7 @@ func UpdateFileAction(c *gin.Context) {
 // @Success 200 object response.FileInfo    "成功后返回值"
 // @Router /repo/file [delete]
 func DeleteFileAction(c *gin.Context) {
-	token := c.Query("token")
+	token := c.GetString("token")
 	login := c.Query("login")
 	uid := c.Query("uid")
 	sha := c.Query("sha")

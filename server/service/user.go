@@ -67,6 +67,7 @@ func GetToken(repoType, code string) (auth global.AuthInfo, err error) {
 	if err != nil {
 		return auth, err
 	}
+	fmt.Println(string(resp.Body()))
 	json.Unmarshal(resp.Body(), &auth)
 	auth.RepoType = repoType
 	return auth, nil

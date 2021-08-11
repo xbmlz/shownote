@@ -57,7 +57,7 @@
             type="primary"
             icon="el-icon-edit"
           >
-            编辑 (E)
+            编辑
           </el-button>
           <el-button v-else
             @click="updateNote"
@@ -210,16 +210,16 @@ export default defineComponent({
         this.updateNote();
         e.preventDefault();
       }
-      if (e.key === "e") {
-        this.toggleEdit(false);
-        e.preventDefault();
-      }
+      // if (e.key === "e") {
+      //   this.toggleEdit(false);
+      //   e.preventDefault();
+      // }
     },
     // 初始化编辑器
     initVditor() {
       this.vditor = new Vditor("vditor", {
         height: "0",
-        mode: "wysiwyg",
+        mode: "ir",
         tab: "\t",
         counter: "999999",
         typewriterMode: true,
@@ -233,13 +233,16 @@ export default defineComponent({
           position: "right",
         },
         upload: {
-          url: localStorage.baseURL + "/repo/upload",
+          url: localStorage.baseURL + "repo/upload",
           multiple: false,
           fieldName: "file",
           extraData: {
             login: this.userInfo.login,
             token: localStorage.token,
           },
+          headers: {
+            Authorization: localStorage.token
+          }
         },
         cache: {
           enable: false,
@@ -547,6 +550,7 @@ export default defineComponent({
         this.vditor.vditor[this.vditor.vditor.currentMode].element.parentElement.style.display = flag?'none':"block";
       }
       this.vditor.vditor.preview.render(this.vditor.vditor);
+      this.vditor.vditor.outline.render(this.vditor.vditor);
       if(!this.disabled) {
         this.vditor.focus()
       }
