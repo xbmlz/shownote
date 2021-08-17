@@ -151,7 +151,7 @@ export default defineComponent({
   },
   data() {
     return {
-      router:null,
+      router: null,
       token: "",
       // 编辑器实例
       disabled: true,
@@ -390,7 +390,6 @@ export default defineComponent({
         // 检测重命名
         let node = this.$refs["noteTree"].getNode(this.activeTreeNode.path);
         this.rename = this.validateName(this.rename, false, node.data.child);
-
         this.addFile();
       }
       if (this.type === "updateDir" || this.type === "updateFile") {
@@ -530,7 +529,7 @@ export default defineComponent({
      * @param data 当前文件信息
      * @param disabled 编辑器是否设置为禁用状态，默认是
      **/
-    handleNodeClick(data, disabled = true) {
+    handleNodeClick(data, disabled) {
       this.showRightMenu = false;
       this.activeTreeNode = data;
       if (!data.isDir) {
@@ -542,7 +541,9 @@ export default defineComponent({
               this.activeTreeNode.sha = res.sha;
               this.vditor.focus();
               this.vditor.setValue(res.content, true);
-              this.toggleEdit(disabled)
+              //  设置编辑区状态
+              let isDisabled = typeof disabled === 'boolean' ? disabled : true;
+              this.toggleEdit(isDisabled)
             })
             .catch(() => {
               this.isLoading = false;
@@ -569,7 +570,7 @@ export default defineComponent({
     rightClick(event, data) {
       if (JSON.stringify(data) === "{}") {
         this.$refs["noteTree"].setCurrentKey();
-        this.vditor.disabled();
+        this.toggleEdit(true)
       }
       this.activeTreeNode = data;
       this.showRightMenu = false; // 先把模态框关死，目的是：第二次或者第n次右键鼠标的时候 它默认的是true
@@ -727,6 +728,7 @@ export default defineComponent({
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
+        buttonSize: 'mini'
       })
           .then(() => {
             const {uid, sha} = this.activeTreeNode;
@@ -750,12 +752,11 @@ export default defineComponent({
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
-      })
-          .then(() => {
-            this.removeTreeNode(this.activeTreeNode, this.notes);
-          })
-          .catch(() => {
-          });
+        buttonSize: 'mini'
+      }).then(() => {
+        this.removeTreeNode(this.activeTreeNode, this.notes);
+      }).catch(() => {
+      });
     },
     handleCommand(command) {
       if (command === 'logout') {

@@ -1,8 +1,7 @@
-import {useRouter} from "vue-router";
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
-import { ElMessage  } from 'element-plus';
+import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse} from "axios";
+import {ElMessage} from 'element-plus';
+import Router from "@/router"
 
-const router = useRouter();
 export interface ResponseData {
     code: number;
     data?: any;
@@ -44,9 +43,11 @@ service.interceptors.response.use(
             const data: ResponseData = res.data
             if (data.code === 0) {
                 return data;
-            } else if(data.code === 4010 || data.code === 4011 || data.code === 4012) {
-                router.push('/login')
-            } else{
+            } else if (data.code === 4010 || data.code === 4011 || data.code === 4012) {
+                ElMessage.error("Token失效，请重新登录");
+                localStorage.removeItem('token')
+                Router.push('/login')
+            } else {
                 ElMessage.error(data.message);
                 return Promise.reject(new Error(res.data.message || "Error"));
             }
